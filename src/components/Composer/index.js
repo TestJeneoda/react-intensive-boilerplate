@@ -10,7 +10,7 @@ export default class Composer extends Component {
             <section>
                 <img src = { avatar } />
                 <form>
-                    <textarea placeholder = 'Homer Simpson' />
+                    <textarea placeholder = { `What's on your mind, Homer?` } />;
                     <input type = 'submit' value = 'Post' />
                 </form>
             </section>
