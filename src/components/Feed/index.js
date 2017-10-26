@@ -7,6 +7,7 @@ import Styles from './styles';
 // Components
 import Composer from '../../components/Composer';
 import Post from '../../components/Post';
+import Catcher from '../../components/Catcher';
 import Counter from '../../components/Counter';
 
 export default class Feed extends Component {
@@ -29,7 +30,9 @@ export default class Feed extends Component {
     render () {
         const { posts: postsData } = this.state;
         const posts = postsData.map(({ id, comment }) => (
-            <Post comment = { comment } id = { id } key = { id } />
+            <Catcher key = { id }>
+                <Post comment = { comment } id = { id } />
+            </Catcher>
         ));
 
         return (
