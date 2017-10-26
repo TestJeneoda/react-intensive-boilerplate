@@ -9,8 +9,8 @@ import avatar from '../../theme/assets/homer.png';
 import Feed from '../../components/Feed';
 import Catcher from '../../components/Catcher';
 
-const GROUP_ID = 'l1lz1az2m5';
-const TOKEN = 'cc6j4usnne';
+const GROUP_ID = '';
+const TOKEN = '';
 
 const options = {
     api:       `https://lab.lectrum.io/api/feed/${GROUP_ID}`,

@@ -43,9 +43,7 @@ export default class Composer extends Component {
             return;
         }
 
-        this.props.createPost({
-            comment
-        });
+        this.props.createPost({ comment });
 
         this.setState(() => ({
             comment: ''

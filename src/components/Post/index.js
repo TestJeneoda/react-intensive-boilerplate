@@ -4,9 +4,17 @@ import React, { Component } from 'react';
 // Instruments
 import Styles from './styles';
 import moment from 'moment';
-import { string, func, number } from 'prop-types';
+import { string, func, number, arrayOf, shape } from 'prop-types';
+
+// Components
+import Like from '../../components/Like';
 
 export default class Post extends Component {
+    static contextTypes = {
+        firstName: string.isRequired,
+        lastName:  string.isRequired
+    };
+
     static propTypes = {
         avatar:     string.isRequired,
         comment:    string.isRequired,
@@ -14,7 +22,14 @@ export default class Post extends Component {
         deletePost: func.isRequired,
         firstName:  string.isRequired,
         id:         string.isRequired,
-        lastName:   string.isRequired
+        lastName:   string.isRequired,
+        likePost:   func.isRequired,
+        likes:      arrayOf(
+            shape({
+                firstName: string.isRequired,
+                lastName:  string.isRequired
+            }).isRequired
+        ).isRequired
     };
 
     constructor () {
@@ -34,15 +49,38 @@ export default class Post extends Component {
     }
 
     render () {
-        const { avatar, comment, created, firstName, lastName } = this.props;
+        const {
+            avatar,
+            comment,
+            created,
+            firstName,
+            id,
+            lastName,
+            likes,
+            likePost
+        } = this.props;
+
+        const { firstName: ownFirstName, lastName: ownLastName } = this.context;
+
+        const isAbleToDelete =
+            `${firstName} ${lastName}` === `${ownFirstName} ${ownLastName}` ? (
+                <span className = { Styles.cross } onClick = { this.deletePost } />
+            ) : null;
+
+        const liked = likes.some(
+            (like) =>
+                `${like.firstName} ${like.lastName}` ===
+                `${ownFirstName} ${ownLastName}`
+        );
 
         return (
             <section className = { Styles.post }>
-                <span className = { Styles.cross } onClick = { this.deletePost } />
+                {isAbleToDelete}
                 <img src = { avatar } />
                 <a>{`${firstName} ${lastName}`}</a>
                 <time>{moment.unix(created).format('MMMM D h:mm:ss a')}</time>
                 <p>{comment}</p>
+                <Like id = { id } liked = { liked } likePost = { likePost } likes = { likes } />
             </section>
         );
     }
