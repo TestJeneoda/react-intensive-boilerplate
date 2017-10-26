@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 // Instruments
 import Styles from './styles';
+import { string } from 'prop-types';
 
 // Components
 import Composer from '../../components/Composer';
@@ -10,6 +11,11 @@ import Post from '../../components/Post';
 import Counter from '../../components/Counter';
 
 export default class Feed extends Component {
+    static contextTypes = {
+        api:   string.isRequired,
+        token: string.isRequired
+    };
+
     constructor () {
         super();
 
@@ -21,10 +27,33 @@ export default class Feed extends Component {
         posts: []
     };
 
-    _createPost (post) {
-        this.setState(({ posts }) => ({
-            posts: [post, ...posts]
-        }));
+    async _createPost ({ comment }) {
+        try {
+            const { api, token } = this.context;
+
+            const response = await fetch(api, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    Authorization:  token
+                },
+                body: JSON.stringify({
+                    comment
+                })
+            });
+
+            if (response.status !== 200) {
+                throw new Error('Post was not created!');
+            }
+
+            const { data } = await response.json();
+
+            this.setState(({ posts }) => ({
+                posts: [data, ...posts]
+            }));
+        } catch ({ message }) {
+            console.log(message);
+        }
     }
 
     _deletePost (id) {
@@ -35,14 +64,20 @@ export default class Feed extends Component {
 
     render () {
         const { posts: postsData } = this.state;
-        const posts = postsData.map(({ id, comment }) => (
-            <Post
-                comment = { comment }
-                deletePost = { this.deletePost }
-                id = { id }
-                key = { id }
-            />
-        ));
+        const posts = postsData.map(
+            ({ avatar, comment, created, firstName, id, lastName }) => (
+                <Post
+                    avatar = { avatar }
+                    comment = { comment }
+                    created = { created }
+                    deletePost = { this.deletePost }
+                    firstName = { firstName }
+                    id = { id }
+                    key = { id }
+                    lastName = { lastName }
+                />
+            )
+        );
 
         return (
             <section className = { Styles.feed }>

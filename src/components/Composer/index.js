@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 // Instruments
 import Styles from './styles';
 import { string, func } from 'prop-types';
-import { getUniqueID, getRandomColor } from '../../helpers';
+import { getRandomColor } from '../../helpers';
 
 export default class Composer extends Component {
     static contextTypes = {
@@ -44,7 +44,6 @@ export default class Composer extends Component {
         }
 
         this.props.createPost({
-            id: getUniqueID(),
             comment
         });
 
