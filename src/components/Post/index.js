@@ -3,15 +3,16 @@ import React, { Component } from 'react';
 
 // Instruments
 import avatar from '../../theme/assets/homer.png';
+import Styles from './styles';
 import moment from 'moment';
 
 export default class Post extends Component {
     render () {
         return (
-            <section>
+            <section className = { Styles.post }>
                 <img src = { avatar } />
                 <a>Homer Simpson</a>
-                <a>It is {moment().format('MMMM D h:mm:ss a')}.</a>
+                <time>{moment().format('MMMM D h:mm:ss a')}</time>
                 <p>What a good day!</p>
             </section>
         );
