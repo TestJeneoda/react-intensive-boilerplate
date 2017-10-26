@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 // Instruments
 import Styles from './styles';
 import { string, func } from 'prop-types';
-import { getUniqueID } from '../../helpers';
+import { getUniqueID, getRandomColor } from '../../helpers';
 
 export default class Composer extends Component {
     static contextTypes = {
@@ -21,14 +21,22 @@ export default class Composer extends Component {
 
         this.handleSubmit = ::this._handleSubmit;
         this.handleTextareaChange = ::this._handleTextareaChange;
+        this.handleTextareaCopy = ::this._handleTextareaCopy;
+        this.handleTextareaKeyPress = ::this._handleTextareaKeyPress;
+        this.createPost = ::this._createPost;
     }
 
     state = {
-        comment: ''
+        comment:           '',
+        avatarBorderColor: '90949C'
     };
 
     _handleSubmit (event) {
         event.preventDefault();
+        this._createPost();
+    }
+
+    _createPost () {
         const { comment } = this.state;
 
         if (!comment) {
@@ -51,18 +59,38 @@ export default class Composer extends Component {
         this.setState(() => ({ comment }));
     }
 
+    _handleTextareaCopy (event) {
+        event.preventDefault();
+    }
+
+    _handleTextareaKeyPress (event) {
+        const enterKey = event.key === 'Enter';
+
+        enterKey
+            ? this.createPost()
+            : this.setState(() => ({
+                avatarBorderColor: getRandomColor()
+            }));
+
+        if (enterKey) {
+            event.preventDefault();
+        }
+    }
+
     render () {
         const { avatar, firstName } = this.context;
-        const { comment } = this.state;
+        const { comment, avatarBorderColor } = this.state;
 
         return (
             <section className = { Styles.composer }>
-                <img src = { avatar } />
+                <img src = { avatar } style = { { borderColor: avatarBorderColor } } />
                 <form onSubmit = { this.handleSubmit }>
                     <textarea
                         placeholder = { `What's on your mind, ${firstName}?` }
                         value = { comment }
                         onChange = { this.handleTextareaChange }
+                        onCopy = { this.handleTextareaCopy }
+                        onKeyPress = { this.handleTextareaKeyPress }
                     />
                     <input type = 'submit' value = 'Post' />
                 </form>

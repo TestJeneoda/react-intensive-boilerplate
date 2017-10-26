@@ -14,6 +14,7 @@ export default class Feed extends Component {
         super();
 
         this.createPost = ::this._createPost;
+        this.deletePost = ::this._deletePost;
     }
 
     state = {
@@ -26,10 +27,21 @@ export default class Feed extends Component {
         }));
     }
 
+    _deletePost (id) {
+        this.setState(({ posts }) => ({
+            posts: posts.filter((post) => post.id !== id)
+        }));
+    }
+
     render () {
         const { posts: postsData } = this.state;
         const posts = postsData.map(({ id, comment }) => (
-            <Post comment = { comment } id = { id } key = { id } />
+            <Post
+                comment = { comment }
+                deletePost = { this.deletePost }
+                id = { id }
+                key = { id }
+            />
         ));
 
         return (

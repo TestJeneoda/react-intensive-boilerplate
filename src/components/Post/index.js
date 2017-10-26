@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 // Instruments
 import Styles from './styles';
 import moment from 'moment';
-import { string } from 'prop-types';
+import { string, func } from 'prop-types';
 
 export default class Post extends Component {
     static contextTypes = {
@@ -14,31 +14,34 @@ export default class Post extends Component {
     };
 
     static propTypes = {
-        comment: string.isRequired,
-        id:      string.isRequired
+        comment:    string.isRequired,
+        deletePost: func.isRequired,
+        id:         string.isRequired
     };
 
-    componentWillMount () {
-        console.log(this.props.id, 'will mount');
-    }
+    constructor () {
+        super();
 
-    componentDidMount () {
-        console.log(this.props.id, 'did mount');
+        this.deletePost = ::this._deletePost;
     }
 
     shouldComponentUpdate (nextProps) {
         return JSON.stringify(nextProps) !== JSON.stringify(this.props);
     }
 
+    _deletePost () {
+        const { deletePost, id } = this.props;
+
+        deletePost(id);
+    }
+
     render () {
         const { avatar, firstName, lastName } = this.context;
         const { comment } = this.props;
 
-        console.log(this.props.id, 'render');
-
         return (
             <section className = { Styles.post }>
-                <span className = { Styles.cross } />
+                <span className = { Styles.cross } onClick = { this.deletePost } />
                 <img src = { avatar } />
                 <a>{`${firstName} ${lastName}`}</a>
                 <time>{moment().format('MMMM D h:mm:ss a')}</time>
