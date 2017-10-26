@@ -13,8 +13,13 @@ export default class Post extends Component {
         lastName:  string.isRequired
     };
 
+    static propTypes = {
+        comment: string.isRequired
+    };
+
     render () {
         const { avatar, firstName, lastName } = this.context;
+        const { comment } = this.props;
 
         return (
             <section className = { Styles.post }>
@@ -22,7 +27,7 @@ export default class Post extends Component {
                 <img src = { avatar } />
                 <a>{`${firstName} ${lastName}`}</a>
                 <time>{moment().format('MMMM D h:mm:ss a')}</time>
-                <p>What a good day!</p>
+                <p>{comment}</p>
             </section>
         );
     }

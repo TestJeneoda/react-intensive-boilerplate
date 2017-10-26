@@ -9,11 +9,32 @@ import Composer from '../../components/Composer';
 import Post from '../../components/Post';
 
 export default class Feed extends Component {
+    constructor () {
+        super();
+
+        this.createPost = ::this._createPost;
+    }
+
+    state = {
+        posts: []
+    };
+
+    _createPost (post) {
+        this.setState(({ posts }) => ({
+            posts: [post, ...posts]
+        }));
+    }
+
     render () {
+        const { posts: postsData } = this.state;
+        const posts = postsData.map(({ _id, comment }) => (
+            <Post comment = { comment } key = { _id } />
+        ));
+
         return (
             <section className = { Styles.feed }>
-                <Composer />
-                <Post />
+                <Composer createPost = { this.createPost } />
+                {posts}
             </section>
         );
     }
