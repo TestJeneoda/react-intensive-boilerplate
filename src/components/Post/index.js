@@ -14,26 +14,27 @@ export default class Post extends Component {
     };
 
     static propTypes = {
-        comment: string.isRequired
+        comment: string.isRequired,
+        id:      string.isRequired
     };
 
     componentWillMount () {
-        // console.log(`will mount`, this.props._id);
+        console.log(this.props.id, 'will mount');
     }
 
     componentDidMount () {
-        console.log(`Did mount`);
+        console.log(this.props.id, 'did mount');
     }
 
     shouldComponentUpdate (nextProps) {
-
         return JSON.stringify(nextProps) !== JSON.stringify(this.props);
     }
+
     render () {
         const { avatar, firstName, lastName } = this.context;
         const { comment } = this.props;
 
-        console.log('render');
+        console.log(this.props.id, 'render');
 
         return (
             <section className = { Styles.post }>
