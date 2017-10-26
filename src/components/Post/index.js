@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 // Instruments
-import avatar from '../../theme/assets/lisa.png';
+import avatar from '../../theme/assets/homer.png';
 import Styles from './styles';
 import moment from 'moment';
 
