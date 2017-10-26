@@ -11,7 +11,7 @@ export default class Post extends Component {
             <section>
                 <img src = { avatar } />
                 <a>Homer Simpson</a>
-                <a>It is {moment().format('MMMM D h:mm:ss a')}.</a>
+                <time>{moment().format('MMMM D h:mm:ss a')}</time>
                 <p>What a good day!</p>
             </section>
         );
