@@ -61,5 +61,8 @@ linters:
   ElsePlacement:
     enabled: false
 
+  QualifyingElement:
+    enabled: false
+
   SingleLinePerSelector:
     enabled: false
