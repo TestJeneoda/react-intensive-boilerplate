@@ -51,7 +51,10 @@
     "start": "npm run start-js",
     "test": "node scripts/test.js --env=jsdom",
     "setup": "sh scripts/setup.sh",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "check": "run-s lint:eslint lint:scss-lint",
+    "lint:eslint": "eslint ./src",
+    "lint:scss-lint": "scss-lint"
   },
   "devDependencies": {
     "babel-preset-stage-0": "^6.24.1",
