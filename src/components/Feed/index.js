@@ -8,6 +8,7 @@ import { string } from 'prop-types';
 // Components
 import Composer from '../../components/Composer';
 import Post from '../../components/Post';
+import Catcher from '../../components/Catcher';
 import Counter from '../../components/Counter';
 
 export default class Feed extends Component {
@@ -66,16 +67,17 @@ export default class Feed extends Component {
         const { posts: postsData } = this.state;
         const posts = postsData.map(
             ({ avatar, comment, created, firstName, id, lastName }) => (
-                <Post
-                    avatar = { avatar }
-                    comment = { comment }
-                    created = { created }
-                    deletePost = { this.deletePost }
-                    firstName = { firstName }
-                    id = { id }
-                    key = { id }
-                    lastName = { lastName }
-                />
+                <Catcher key = { id }>
+                    <Post
+                        avatar = { avatar }
+                        comment = { comment }
+                        created = { created }
+                        deletePost = { this.deletePost }
+                        firstName = { firstName }
+                        id = { id }
+                        lastName = { lastName }
+                    />
+                </Catcher>
             )
         );
 
