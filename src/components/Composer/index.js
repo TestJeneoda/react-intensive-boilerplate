@@ -10,7 +10,7 @@ export default class Composer extends Component {
         return (
             <section className = { Styles.composer }>
                 <form>
-                    <textarea placeholder = 'Homer Simpson' />
+                    <textarea placeholder = { `What's on your mind, Homer?` } />
                     <input type = 'submit' value = 'Post' />
                 </form>
             </section>
