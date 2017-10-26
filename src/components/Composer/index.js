@@ -36,7 +36,7 @@ export default class Composer extends Component {
         }
 
         this.props.createPost({
-            _id: getUniqueID(),
+            id: getUniqueID(),
             comment
         });
 
