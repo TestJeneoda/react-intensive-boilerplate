@@ -183,7 +183,7 @@ export default class Feed extends Component {
                         exitActive:  Styles.postOutEnd
                     } }
                     key = { id }
-                    timeout = { { enter: 1000, exit: 1200 } }>
+                    timeout = { { enter: 700, exit: 600 } }>
                     <Catcher>
                         <Post
                             avatar = { avatar }

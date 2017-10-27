@@ -1,4 +1,5 @@
 @import '../../theme/palette';
+@import '../../theme/animations';
 
 .feed {
     display: flex;
@@ -16,7 +17,8 @@
 
     .postInEnd {
         transform: scale(1);
-        transition: opacity 1000ms ease-in, transform 1000ms ease-out;
+        transition: opacity 700ms $cubic1,
+            transform 700ms $cubic1;
         opacity: 1;
     }
 
@@ -27,7 +29,7 @@
 
     .postOutEnd {
         transform: rotate3d(3, 2, 1, 107deg) translate(650px, -110px);
-        transition: opacity 1200ms ease-in-out, transform 1200ms ease-in-out;
+        transition: opacity 600ms $cubic2, transform 600ms $cubic2;
         opacity: .01;
     }
 }
