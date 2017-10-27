@@ -48,7 +48,7 @@ export default class Feed extends Component {
     componentDidMount () {
         this.getPosts();
 
-        this.refetch = setInterval(this.getPosts, 10000);
+        this.refetch = setInterval(this.getPosts, 3000);
     }
 
     componentWillUnmount () {
