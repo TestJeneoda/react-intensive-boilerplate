@@ -28,7 +28,7 @@ export default class Composer extends Component {
 
     state = {
         comment:           '',
-        avatarBorderColor: '90949C'
+        avatarBorderColor: '#90949C'
     };
 
     _handleSubmit (event) {
