@@ -139,29 +139,30 @@ export default class Feed extends Component {
         }
     }
 
-    async _likePost (id, firstName, lastName) {
+    async _likePost (id) {
         try {
-            const { api } = this.context;
+            const { api, token } = this.context;
 
             this.startPostsFetching();
 
             const response = await fetch(`${api}/${id}`, {
                 method:  'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    firstName,
-                    lastName
-                })
+                    Authorization: token
+                }
             });
 
-            if (response.status !== 204) {
+            if (response.status !== 200) {
                 this.stopPostsFetching();
                 throw new Error('Post was not liked!');
             }
 
-            this.stopPostsFetching();
+            const { data } = await response.json();
+
+            this.setState(({ posts }) => ({
+                posts:         posts.map((post) => post.id === data.id ? data : post),
+                postsFetching: false
+            }));
         } catch ({ message }) {
             console.log(message);
         }

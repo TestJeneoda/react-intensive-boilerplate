@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 // Instruments
 import Styles from './styles.scss';
-import { string, bool, func, arrayOf, shape } from 'prop-types';
+import { string, func, arrayOf, shape } from 'prop-types';
 
 export default class Like extends Component {
     static contextTypes = {
@@ -13,7 +13,6 @@ export default class Like extends Component {
 
     static propTypes = {
         id:       string.isRequired,
-        liked:    bool.isRequired,
         likePost: func.isRequired,
         likes:    arrayOf(
             shape({
@@ -59,30 +58,40 @@ export default class Like extends Component {
     }
 
     render () {
-        const { liked, likes } = this.props;
+        const { likes } = this.props;
         const { showLikers } = this.state;
         const { firstName: ownFirstName, lastName: ownLastName } = this.context;
+
+        const liked = likes.some(
+            (like) =>
+                `${like.firstName} ${like.lastName}` ===
+                `${ownFirstName} ${ownLastName}`
+        );
 
         const likeStyles = liked
             ? `${Styles.icon} ${Styles.liked}`
             : `${Styles.icon}`;
 
-        const likersList = likes.length && showLikers ? (
-            <ul>
-                {likes.map(({ firstName, lastName }, index) => (
-                    <li key = { index }>{`${firstName} ${lastName}`}</li>
-                ))}
-            </ul>
-        ) : null;
+        const likersList =
+            likes.length && showLikers ? (
+                <ul>
+                    {likes.map(({ firstName, lastName, id }) => (
+                        <li key = { id }>{`${firstName} ${lastName}`}</li>
+                    ))}
+                </ul>
+            ) : null;
 
-        const meLiked = likes.some(
+        const likedByMe = likes.some(
             ({ firstName, lastName }) =>
                 `${firstName} ${lastName}` === `${ownFirstName} ${ownLastName}`
         );
 
-        const totalLikes = meLiked
-            ? `You and ${likes.length} others`
-            : likes.length;
+        const totalLikes =
+            likes.length === 1 && likedByMe
+                ? `${ownFirstName} ${ownLastName}`
+                : likedByMe
+                    ? `You and ${likes.length} others`
+                    : likes.length;
 
         return (
             <section className = { Styles.like }>
