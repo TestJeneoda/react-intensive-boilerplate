@@ -28,7 +28,7 @@
     }
 
     .postOutEnd {
-        transform: rotate3d(3, 2, 1, 107deg) translate(650px, -110px);
+        transform: rotate3d(3, 2, 1, 107deg) translate(1250px, -110px);
         transition: opacity 600ms $cubic2, transform 600ms $cubic2;
         opacity: .01;
     }

@@ -4,7 +4,12 @@ import React, { Component } from 'react';
 // Instruments
 import Styles from './styles';
 import { string } from 'prop-types';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import {
+    Transition,
+    CSSTransition,
+    TransitionGroup
+} from 'react-transition-group';
+import { fromTo } from 'gsap';
 
 // Components
 import Composer from '../../components/Composer';
@@ -12,6 +17,7 @@ import Post from '../../components/Post';
 import Catcher from '../../components/Catcher';
 import Counter from '../../components/Counter';
 import Spinner from '../../components/Spinner';
+import Postman from '../../components/Postman';
 
 export default class Feed extends Component {
     static contextTypes = {
@@ -28,6 +34,10 @@ export default class Feed extends Component {
         this.startPostsFetching = ::this._startPostsFetching;
         this.stopPostsFetching = ::this._stopPostsFetching;
         this.likePost = ::this._likePost;
+        this.handleComposerAppear = ::this._handleComposerAppear;
+        this.handleCounterAppear = ::this._handleCounterAppear;
+        this.handlePostmanAppear = ::this._handlePostmanAppear;
+        this.handlePostmanDisappear = ::this._handlePostmanDisappear;
     }
 
     state = {
@@ -171,6 +181,74 @@ export default class Feed extends Component {
         }
     }
 
+    _handleComposerAppear (composer) {
+        fromTo(
+            composer,
+            1,
+            {
+                y:         -200,
+                x:         500,
+                opacity:   0,
+                rotationY: 360
+            },
+            {
+                y:         0,
+                x:         0,
+                opacity:   1,
+                rotationY: 0
+            }
+        );
+    }
+
+    _handleCounterAppear (counter) {
+        fromTo(
+            counter,
+            1,
+            {
+                x:         -1000,
+                y:         -300,
+                opacity:   0,
+                rotationY: 360
+            },
+            {
+                x:         0,
+                y:         0,
+                opacity:   1,
+                rotationY: 0
+            }
+        );
+    }
+
+    _handlePostmanAppear (postman) {
+        fromTo(
+            postman,
+            2,
+            {
+                x:       500,
+                opacity: 0
+            },
+            {
+                x:       0,
+                opacity: 1
+            }
+        );
+    }
+
+    _handlePostmanDisappear (postman) {
+        fromTo(
+            postman,
+            2,
+            {
+                x:       0,
+                opacity: 1
+            },
+            {
+                x:       500,
+                opacity: 0
+            }
+        );
+    }
+
     render () {
         const { posts: postsData, postsFetching } = this.state;
         const posts = postsData.map(
@@ -206,9 +284,29 @@ export default class Feed extends Component {
         return (
             <section className = { Styles.feed }>
                 {spinner}
-                <Composer createPost = { this.createPost } />
-                <Counter count = { posts.length } />
+                <Transition
+                    appear
+                    in
+                    timeout = { 1000 }
+                    onEnter = { this.handleComposerAppear }>
+                    <Composer createPost = { this.createPost } />
+                </Transition>
+                <Transition
+                    appear
+                    in
+                    timeout = { 1000 }
+                    onEnter = { this.handleCounterAppear }>
+                    <Counter count = { posts.length } />
+                </Transition>
                 <TransitionGroup>{posts}</TransitionGroup>
+                <Transition
+                    appear
+                    in
+                    timeout = { 3000 }
+                    onEnter = { this.handlePostmanAppear }
+                    onEntered = { this.handlePostmanDisappear }>
+                    <Postman />
+                </Transition>
             </section>
         );
     }
