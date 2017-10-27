@@ -67,12 +67,6 @@ export default class Post extends Component {
                 <span className = { Styles.cross } onClick = { this.deletePost } />
             ) : null;
 
-        const liked = likes.some(
-            (like) =>
-                `${like.firstName} ${like.lastName}` ===
-                `${ownFirstName} ${ownLastName}`
-        );
-
         return (
             <section className = { Styles.post }>
                 {isAbleToDelete}
@@ -80,7 +74,7 @@ export default class Post extends Component {
                 <a>{`${firstName} ${lastName}`}</a>
                 <time>{moment.unix(created).format('MMMM D h:mm:ss a')}</time>
                 <p>{comment}</p>
-                <Like id = { id } liked = { liked } likePost = { likePost } likes = { likes } />
+                <Like id = { id } likePost = { likePost } likes = { likes } />
             </section>
         );
     }
