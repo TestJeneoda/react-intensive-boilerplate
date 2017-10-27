@@ -89,9 +89,11 @@ export default class Like extends Component {
         const totalLikes =
             likes.length === 1 && likedByMe
                 ? `${ownFirstName} ${ownLastName}`
-                : likedByMe
-                    ? `You and ${likes.length - 1} others`
-                    : likes.length;
+                : likes.length === 2 && likedByMe
+                    ? `You and ${likes.length - 1} other`
+                    : likedByMe
+                        ? `You and ${likes.length - 1} others`
+                        : likes.length;
 
         return (
             <section className = { Styles.like }>
