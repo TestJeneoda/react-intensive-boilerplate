@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 // Instruments
-import Styles from './styles';
+import Styles from './styles.scss';
 import { string, func } from 'prop-types';
 import { getRandomColor } from '../../helpers';
 
@@ -28,7 +28,7 @@ export default class Composer extends Component {
 
     state = {
         comment:           '',
-        avatarBorderColor: '90949C'
+        avatarBorderColor: '#90949C'
     };
 
     _handleSubmit (event) {
