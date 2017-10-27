@@ -90,7 +90,7 @@ export default class Like extends Component {
             likes.length === 1 && likedByMe
                 ? `${ownFirstName} ${ownLastName}`
                 : likedByMe
-                    ? `You and ${likes.length} others`
+                    ? `You and ${likes.length - 1} others`
                     : likes.length;
 
         return (
