@@ -32,6 +32,9 @@ export default class Like extends Component {
         this.showLikers = ::this._showLikers;
         this.hideLikers = ::this._hideLikers;
         this.likePost = ::this._likePost;
+        this.getLikedPosts = ::this._getLikedPosts;
+        this.getLikersList = ::this._getLikersList;
+        this.getTotalLikes = ::this._getTotalLikes;
     }
 
     state = {
@@ -57,43 +60,52 @@ export default class Like extends Component {
         likePost(id, firstName, lastName);
     }
 
-    render () {
-        const { likes } = this.props;
-        const { showLikers } = this.state;
+    _getLikedPosts () {
         const { firstName: ownFirstName, lastName: ownLastName } = this.context;
 
-        const liked = likes.some(
-            (like) =>
-                `${like.firstName} ${like.lastName}` ===
-                `${ownFirstName} ${ownLastName}`
+        return this.props.likes.some(
+            ({ firstName, lastName }) =>
+                `${firstName} ${lastName}` === `${ownFirstName} ${ownLastName}`
         );
+    }
 
-        const likeStyles = liked
-            ? `${Styles.icon} ${Styles.liked}`
-            : `${Styles.icon}`;
+    _getLikersList () {
+        const { likes } = this.props;
+        const { showLikers } = this.state;
 
-        const likersList =
-            likes.length && showLikers ? (
-                <ul>
-                    {likes.map(({ firstName, lastName, id }) => (
-                        <li key = { id }>{`${firstName} ${lastName}`}</li>
-                    ))}
-                </ul>
-            ) : null;
+        return likes.length && showLikers ? (
+            <ul>
+                {likes.map(({ firstName, lastName, id }) => (
+                    <li key = { id }>{`${firstName} ${lastName}`}</li>
+                ))}
+            </ul>
+        ) : null;
+    }
+
+    _getTotalLikes () {
+        const { likes } = this.props;
+        const { firstName: ownFirstName, lastName: ownLastName } = this.context;
 
         const likedByMe = likes.some(
             ({ firstName, lastName }) =>
                 `${firstName} ${lastName}` === `${ownFirstName} ${ownLastName}`
         );
 
-        const totalLikes =
-            likes.length === 1 && likedByMe
-                ? `${ownFirstName} ${ownLastName}`
-                : likes.length === 2 && likedByMe
-                    ? `You and ${likes.length - 1} other`
-                    : likedByMe
-                        ? `You and ${likes.length - 1} others`
-                        : likes.length;
+        return likes.length === 1 && likedByMe
+            ? `${ownFirstName} ${ownLastName}`
+            : likes.length === 2 && likedByMe
+                ? `You and ${likes.length - 1} other`
+                : likedByMe ? `You and ${likes.length - 1} others` : likes.length;
+    }
+
+    render () {
+        const likedPosts = this.getLikedPosts();
+        const likeStyles = likedPosts
+            ? `${Styles.icon} ${Styles.liked}`
+            : `${Styles.icon}`;
+
+        const likersList = this.getLikersList();
+        const totalLikes = this.getTotalLikes();
 
         return (
             <section className = { Styles.like }>
