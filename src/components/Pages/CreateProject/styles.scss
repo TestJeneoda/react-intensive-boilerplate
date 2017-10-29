@@ -1,0 +1,103 @@
+.projectForm {
+  width: 800px;
+  margin: 20px auto;
+
+  .formRow {
+    margin: 10px 0;
+    padding: 20px 0;
+    border-bottom: 1px #ccc solid;
+
+    h1 {
+      font-size: 35px;
+      margin: 5px 0;
+    }
+  }
+
+  .repoTypeRow {
+    margin: 10px 0;
+    border-bottom: 1px #ccc solid;
+
+    .publicImg {
+      display: inline-block;
+      position: absolute;
+      width: 140px;
+      height: 70px;
+      left: -34px;
+      top: -15px;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+    }
+
+    label {
+      display: inline-block;
+      position: relative;
+
+      p {
+        padding-left: 35px;
+      }
+    }
+
+  }
+
+  .readmeInitRow {
+    margin: 15px 0;
+    border-bottom: 1px solid #ccc;
+
+    label {
+      font-weight: 700;
+    }
+
+    p {
+      font-weight: 300;
+    }
+  }
+
+  .footerDropDowns {
+    margin: 20px 0;
+
+    & > span {
+      margin: 0 15px;
+      color: #ccc;
+      font-size: 26px;
+      vertical-align: middle;
+    }
+
+    & > i {
+      margin: 0 15px;
+    }
+
+    .gitignoreOption {
+      font-weight: 700;
+    }
+  }
+
+  .description {
+    margin: 20px 0;
+  }
+
+  .repositoryPath {
+    display: flex !important;
+    flex-direction: row !important;
+
+    input {
+      width: 200px !important;
+      display: inline-block !important;
+      vertical-align: middle !important;
+    }
+
+    label {
+      display: block !important;
+    }
+
+    span {
+      margin: 0 5px;
+      font-size: 22px;
+      vertical-align: middle;
+    }
+
+  }
+
+}

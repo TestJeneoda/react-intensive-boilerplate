@@ -1,0 +1,138 @@
+.sectionWrapper {
+  background-color: #fafbfc;
+  padding-bottom: 0;
+
+  .projectHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e1e4e8;
+  }
+
+  .projectDescription,
+  .tree,
+  .codeNavigation {
+    width: 80%;
+    margin: 0 auto 20px;
+  }
+
+  .breadCrumbs, .tabs {
+    width: 80%;
+    padding: 0 5px;
+  }
+
+  .breadCrumbs {
+    a {
+      font-size: 20px;
+
+      &.current {
+        font-weight: 700;
+      }
+    }
+
+    span {
+      margin: 0 10px;
+      font-size: 20px;
+    }
+  }
+
+  .tabs {
+    ul {
+      margin: 0 auto;
+      display: block;
+      padding-top: 10px;
+      border-bottom: 0 !important;
+
+      li {
+        display: block !important;
+
+        a {
+          color: #000 !important;
+          font-size: 16px;
+        }
+
+      }
+
+    }
+  }
+
+  .codeNavigation {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .buttonGroup {
+    button {
+      margin-left: 8px !important;
+    }
+  }
+  .selectBranch {
+    display: inline-block;
+  }
+  .buttonGroup {
+    display: inline-block;
+  }
+
+
+  .tree {
+
+  }
+  .lastCommitAuthorMessage {
+
+  }
+  .lastCommitLeft {
+
+  }
+  .lastCommitRight {
+
+  }
+  .treeLastCommit {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    padding: 10px;
+    margin-bottom: -1px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #586069;
+    background-color: #f1f8ff;
+    border: 1px solid #c8e1ff;
+    border-radius: 3px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .lastCommitAuthorAvatar {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -1px;
+    img {
+      vertical-align: top;
+      overflow: hidden;
+      line-height: 1;
+      border-radius: 2px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+  .lastCommitAuthorLoginArea {
+    display: inline-block;
+  }
+  .lastCommitAuthorLogin {
+    font-weight: 600;
+    color: #24292e;
+    white-space: nowrap;
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  .lastCommitAuthorMessage {
+    color: #24292e;
+    white-space: nowrap;
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+}

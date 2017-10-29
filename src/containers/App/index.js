@@ -1,22 +1,3 @@
-// Core
-import React, { Component } from 'react';
+import App from '../../components/App';
 
-// Instruments
-import Styles from './styles.scss';
-import moment from 'moment';
-
-export default class App extends Component {
-
-    timer = setInterval(() => this.forceUpdate(), 1000);
-
-    render () {
-        return (
-            <section className = { Styles.app }>
-                <h1>Welcome!</h1>
-                <p>
-                    It is {moment().format('MMMM D h:mm:ss a')}.
-                </p>
-            </section>
-        );
-    }
-}
+export default App;
