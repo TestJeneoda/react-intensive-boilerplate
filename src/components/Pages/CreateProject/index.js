@@ -84,13 +84,11 @@ export class CreateProject extends Component {
         gitignoreOptions: [],
         licenseOptions:   [],
         newRepoForm: {
-            auto_init:          false,
+            auto_init:          0,
             owner:              this.props.userName,
             name:               '',
             description:        '',
-            public:             true,
-            gitignore_template: '',
-            license_template:   ''
+            public:             true
         }
     }
 
@@ -113,7 +111,7 @@ export class CreateProject extends Component {
 
     setInputValueHandler = ({ target }) => {
         if (target.type === 'checkbox') {
-            let value = !this.state.newRepoForm.auto_init
+            let value = Number(!this.state.newRepoForm.auto_init);
             this.formElementHandler(target.name, value);
 
             return;
@@ -121,24 +119,27 @@ export class CreateProject extends Component {
         this.formElementHandler(target.name, target.value);
     }
 
-    setRadioBtnHandler = (event) => {
-        event.preventDefault();
+    setRadioBtnHandler = ({target}) => {
+        const {name, value} = target;
+        this.formElementHandler(name, Boolean(+value));
     }
 
     createRepo = (event) => {
         event.preventDefault();
         const newRepo = this.state.newRepoForm;
-        let m = gh.getUser();
-        console.log(m.__authorizationHeader);
-        fetch(
-            `http://api.github.com/user/repos`, {
-            method: 'POST',
-            headers: { 'Authorization': m.__authorizationHeader },
-            body: newRepo
-        })
-            .then((response) => {
-            console.log(response.json());
-        })
+        console.log(newRepo, "newRepo");
+        console.log(gh, "gh"); // getUser->create
+        // let m = gh.getUser();
+        // console.log(m.__authorizationHeader);
+        // fetch(
+        //     `http://api.github.com/users/TestJeneoda/repos`, {
+        //     method: 'GET',
+        //     //headers: { 'Authorization': m.__authorizationHeader },
+        //     body: newRepo
+        // })
+        //     .then((response) => {
+        //     console.log(response.json());
+        // })
     }
 
     formElementHandler = (name, value) => {
@@ -152,7 +153,7 @@ export class CreateProject extends Component {
     }
 
     render () {
-
+        let {license_template = '', gitignore_template = '', public:publicField} = this.state.newRepoForm;
         return (
             <div className = { Styles.projectForm } >
                 <form>
@@ -191,30 +192,29 @@ export class CreateProject extends Component {
                         <div className = 'radio'>
                             <label>
                                 <input
-                                    checked
-                                    id = 'public'
-                                    name = 'repoType'
+                                    checked={publicField}
+                                    name = 'public'
                                     type = 'radio'
-                                    value = 'public'
+                                    value = '1'
                                     onChange = { this.setRadioBtnHandler }
                                 />
                                 <p><img className = { Styles.publicImg } src = { book } />Public</p>
                                 <p>Option one is this and that&mdash;be sure to include why it's great</p>
                             </label>
                         </div>
-                        {/*<div className = 'radio'>*/}
-                            {/*<label>*/}
-                                {/*<input*/}
-                                    {/*id = 'private'*/}
-                                    {/*name = 'repoType'*/}
-                                    {/*type = 'radio'*/}
-                                    {/*value = 'public'*/}
-                                    {/*onChange = { this.setRadioBtnHandler }*/}
-                                {/*/>*/}
-                                {/*<p><img className = { Styles.privateImg } src = { lock } />Private</p>*/}
-                                {/*<p>Option one is this and that&mdash;be sure to include why it's great</p>*/}
-                            {/*</label>*/}
-                        {/*</div>*/}
+                        <div className = 'radio'>
+                            <label>
+                                <input
+                                    checked={!publicField}
+                                    name = 'public'
+                                    type = 'radio'
+                                    value = '0'
+                                    onChange = { this.setRadioBtnHandler }
+                                />
+                                <p><img className = { Styles.privateImg } src = { lock } />Private</p>
+                                <p>Option one is this and that&mdash;be sure to include why it's great</p>
+                            </label>
+                        </div>
                     </div>
                     <div className = { Styles.readmeInitRow }>
                         <div className = 'checkbox'>
@@ -233,14 +233,14 @@ export class CreateProject extends Component {
                         <div className = { Styles.footerDropDowns }>
                             <Dropdown
                                 data = { gitignore }
-                                value = { this.state.newRepoForm.gitignore_template }
+                                value = { gitignore_template }
                                 options = { this.state.gitignoreOptions }
                                 onChange = { this.formElementHandler }
                             />
                             <span>|</span>
                             <Dropdown
                                 data = { license }
-                                value = { this.state.newRepoForm.license_template }
+                                value = { license_template }
                                 options = { this.state.licenseOptions }
                                 onChange = { this.formElementHandler }
                             />
