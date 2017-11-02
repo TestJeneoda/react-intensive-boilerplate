@@ -1,9 +1,155 @@
 import React, { Component } from 'react';
+import Proptypes from 'prop-types';
 import Styles from './styles.scss';
-import { REPO_OWNER } from '../../../constants';
+import { REPO_OWNER, GITHUB_URL } from '../../../constants';
 import book from '../../../theme/assets/repo.png';
+import lock from '../../../theme/assets/lock.png';
+import { Dropdown } from '../../Dropdown';
+import { newProjectDropdownValues } from '../../Dropdown/dropdownValues';
+const { gitignore, license } = newProjectDropdownValues;
+import gh from '../../../helpers/githubApi';
 
+const TEMP_DATA = {
+    licenses: [
+        {
+            "key": "mit",
+            "name": "MIT License",
+            "spdx_id": "MIT",
+            "url": "https://api.github.com/licenses/mit",
+            "featured": true
+        },
+        {
+            "key": "lgpl-3.0",
+            "name": "GNU Lesser General Public License v3.0",
+            "spdx_id": "LGPL-3.0",
+            "url": "https://api.github.com/licenses/lgpl-3.0",
+            "featured": false
+        },
+        {
+            "key": "mpl-2.0",
+            "name": "Mozilla Public License 2.0",
+            "spdx_id": "MPL-2.0",
+            "url": "https://api.github.com/licenses/mpl-2.0",
+            "featured": false
+        },
+        {
+            "key": "agpl-3.0",
+            "name": "GNU Affero General Public License v3.0",
+            "spdx_id": "AGPL-3.0",
+            "url": "https://api.github.com/licenses/agpl-3.0",
+            "featured": false
+        },
+        {
+            "key": "unlicense",
+            "name": "The Unlicense",
+            "spdx_id": "Unlicense",
+            "url": "https://api.github.com/licenses/unlicense",
+            "featured": false
+        },
+        {
+            "key": "apache-2.0",
+            "name": "Apache License 2.0",
+            "spdx_id": "Apache-2.0",
+            "url": "https://api.github.com/licenses/apache-2.0",
+            "featured": true
+        },
+        {
+            "key": "gpl-3.0",
+            "name": "GNU General Public License v3.0",
+            "spdx_id": "GPL-3.0",
+            "url": "https://api.github.com/licenses/gpl-3.0",
+            "featured": true
+        }
+    ],
+    gitignore: [
+        "Actionscript",
+        "Android",
+        "AppceleratorTitanium",
+        "Autotools",
+        "Bancha",
+        "C",
+        "C++"
+    ]
+}
+
+import { getJSON } from '../../../helpers';
+import { USER_CREDENTIALS } from '../../../helpers/githubApi';
 export class CreateProject extends Component {
+
+    static propTypes = {
+        userName: Proptypes.string.isRequired
+    }
+
+    state = {
+        gitignoreOptions: [],
+        licenseOptions:   [],
+        newRepoForm: {
+            auto_init:          false,
+            owner:              this.props.userName,
+            name:               '',
+            description:        '',
+            public:             true,
+            gitignore_template: '',
+            license_template:   ''
+        }
+    }
+
+    getGitignoreOptions = () => this.setState({ gitignoreOptions: TEMP_DATA.gitignore})
+        // fetch(`${GITHUB_URL}/gitignore/templates`)
+        // .then(getJSON)
+        // .then((gitignoreOptions) => this.setState({ gitignoreOptions }))
+        // .catch((e) => console.log(e));
+
+    getLicenseOptions = () => this.setState({ licenseOptions: TEMP_DATA.licenses.map(({key, name}) => ({value: key, text: name}))})
+        // fetch(`${GITHUB_URL}/licenses`)
+        // .then(getJSON)
+        // .then((licenseOptions) => this.setState({ licenseOptions }))
+        // .catch((e) => console.log(e));
+
+    componentWillMount () {
+        this.getGitignoreOptions();
+        this.getLicenseOptions();
+    }
+
+    setInputValueHandler = ({ target }) => {
+        if (target.type === 'checkbox') {
+            let value = !this.state.newRepoForm.auto_init
+            this.formElementHandler(target.name, value);
+
+            return;
+        }
+        this.formElementHandler(target.name, target.value);
+    }
+
+    setRadioBtnHandler = (event) => {
+        event.preventDefault();
+    }
+
+    createRepo = (event) => {
+        event.preventDefault();
+        const newRepo = this.state.newRepoForm;
+        let m = gh.getUser();
+        console.log(m.__authorizationHeader);
+        fetch(
+            `http://api.github.com/user/repos`, {
+            method: 'POST',
+            headers: { 'Authorization': m.__authorizationHeader },
+            body: newRepo
+        })
+            .then((response) => {
+            console.log(response.json());
+        })
+    }
+
+    formElementHandler = (name, value) => {
+        const newForm = Object.assign({}, this.state.newRepoForm, { [name]: value });
+
+        this.setState({ newRepoForm: newForm });
+        //
+        // setTimeout(() => {
+        //     console.log(this.state);
+        // }, 2000)
+    }
 
     render () {
 
@@ -17,69 +163,95 @@ export class CreateProject extends Component {
                     <div className = { Styles.repositoryPath }>
                         <div className = 'form-group'>
                             <label htmlFor = 'exampleInputEmail1'>Owner</label>
-                            <input disabled className = 'form-control' id = 'exampleInputEmail1' type = 'text' value = { REPO_OWNER } />
+                            <input disabled className = 'form-control' id = 'exampleInputEmail1' type = 'text' value = { this.props.userName } />
                             <span> / </span>
                         </div>
                         <div className = 'form-group'>
                             <label htmlFor = 'exampleInputPassword1'>Repository name</label>
-                            <input className = 'form-control' id = 'exampleInputPassword1' placeholder = 'Password' type = 'password' />
+                            <input
+                                className = 'form-control'
+                                name = 'name'
+                                type = 'text'
+                                onChange = { this.setInputValueHandler }
+                            />
                         </div>
                     </div>
                     <p>Great repository names are short and memorable. Need inspiration? How about
                         cautious-umbrella.</p>
-                    <div className = { Styles.description + ' form-group' }>
+                    <div className = { `${Styles.description} form-group` }>
                         <label htmlFor = 'exampleInputPassword1'>Description (optional)</label>
-                        <input type = 'text' className = 'form-control' id = 'exampleInputPassword1' />
+                        <input
+                            className = 'form-control'
+                            name = 'description'
+                            type = 'text'
+                            onChange = { this.setInputValueHandler }
+                        />
                     </div>
                     <div className = { Styles.repoTypeRow }>
                         <div className = 'radio'>
                             <label>
-                                <input checked id = 'optionsRadios1' name = 'optionsRadios' type = 'radio' value = 'option1' />
+                                <input
+                                    checked
+                                    id = 'public'
+                                    name = 'repoType'
+                                    type = 'radio'
+                                    value = 'public'
+                                    onChange = { this.setRadioBtnHandler }
+                                />
                                 <p><img className = { Styles.publicImg } src = { book } />Public</p>
                                 <p>Option one is this and that&mdash;be sure to include why it's great</p>
                             </label>
                         </div>
+                        {/*<div className = 'radio'>*/}
+                            {/*<label>*/}
+                                {/*<input*/}
+                                    {/*id = 'private'*/}
+                                    {/*name = 'repoType'*/}
+                                    {/*type = 'radio'*/}
+                                    {/*value = 'public'*/}
+                                    {/*onChange = { this.setRadioBtnHandler }*/}
+                                {/*/>*/}
+                                {/*<p><img className = { Styles.privateImg } src = { lock } />Private</p>*/}
+                                {/*<p>Option one is this and that&mdash;be sure to include why it's great</p>*/}
+                            {/*</label>*/}
+                        {/*</div>*/}
                     </div>
                     <div className = { Styles.readmeInitRow }>
                         <div className = 'checkbox'>
                             <label className = 'checkbox-inline'>
-                                <input id = 'inlineCheckbox1' type = 'checkbox' value = 'option1' />
+                                <input
+                                    id = 'readmeInit'
+                                    name = 'auto_init'
+                                    type = 'checkbox'
+                                    onChange = { this.setInputValueHandler }
+                                />
                                 Initialize this repository with a README
                                 <p>This will let you immediately clone the repository to your computer. Skip this step
                                     if you’re importing an existing repository.</p>
                             </label>
                         </div>
                         <div className = { Styles.footerDropDowns }>
-                            <div className = 'btn-group'>
-                                <button aria-expanded = 'false' aria-haspopup = 'true' className = 'btn btn-default btn-sm dropdown-toggle' data-toggle = 'dropdown' type = 'button'>
-                                    Add .gitignore: <span className = { Styles.gitignoreOption }>None</span>
-                                    <span className = 'caret' />
-                                </button>
-                                <ul className = 'dropdown-menu'>
-                                    <li><a href = '#'>Sass</a></li>
-                                    <li><a href = '#'>VisualStudio</a></li>
-                                    <li><a href = '#'>WordPress</a></li>
-                                    <li><a href = '#'>Yeoman</a></li>
-                                </ul>
-                            </div>
+                            <Dropdown
+                                data = { gitignore }
+                                value = { this.state.newRepoForm.gitignore_template }
+                                options = { this.state.gitignoreOptions }
+                                onChange = { this.formElementHandler }
+                            />
                             <span>|</span>
-                            <div className = 'btn-group'>
-                                <button className = 'btn btn-default btn-sm dropdown-toggle' type = 'button'
-                                        data-toggle = 'dropdown' aria-haspopup = 'true' aria-expanded = 'false'>
-                                    Add a license: <span className = { Styles.gitignoreOption }>None</span>
-                                    <span className = 'caret' />
-                                </button>
-                                <ul className = 'dropdown-menu'>
-                                    <li><a href = '#'>Apache License 2.0</a></li>
-                                    <li><a href = '#'>GNU General Public License v3.0</a></li>
-                                    <li><a href = '#'>MIT License</a></li>
-                                </ul>
-                            </div>
+                            <Dropdown
+                                data = { license }
+                                value = { this.state.newRepoForm.license_template }
+                                options = { this.state.licenseOptions }
+                                onChange = { this.formElementHandler }
+                            />
                             <i aria-hidden = 'true' className = 'fa fa-info-circle' />
                         </div>
                     </div>
-                    <button className = 'btn btn-success' type = 'submit' >Create repository</button>
-
+                    <button
+                        className = 'btn btn-success'
+                        type = 'submit'
+                        onClick = { this.createRepo }>
+                        Create repository</button>
                 </form>
             </div>
         )

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import Styles from './styles.scss';
+import { EditForm } from '../Pages/Project/EditForm';
 
-const CreateButtonGrp = (props) =>
-    props.buttons.map((button, key) =>
-        <button className = { button.className + ' btn' } key = { key } type = 'button'>{button.text}</button>)
+const CreateButtonGrp = (props) => {
+    return props.buttons.map((button, key) =>
+        <button className = { button.className + ' btn' } key = { key } type = 'button' onClick = { button.onClick }>{button.text}</button>)
+}
 
 export class TabsHeader extends Component {
 
@@ -12,7 +14,9 @@ export class TabsHeader extends Component {
         activeTab:       Proptypes.bool.isRequired,
         buttons:         Proptypes.array.isRequired,
         changeActiveTab: Proptypes.func.isRequired,
-        description:     Proptypes.string.isRequired
+        description:     Proptypes.string.isRequired,
+        isComponentActive: Proptypes.bool,
+        replaceableComponent: Proptypes.element
     }
 
     // createButtonGroup = (buttons) => {
@@ -20,17 +24,19 @@ export class TabsHeader extends Component {
     // };
 
     render () {
-        const { activeTab, description, buttons } = this.props;
+        const { activeTab, description, buttons, isComponentActive, replaceableComponent } = this.props;
 
         return (
-            activeTab ? <section className = { Styles.description }>
+            activeTab ? (isComponentActive ? replaceableComponent : <section className = { Styles.description }>
                 <div className = { Styles.title }>{description}</div>
                 <div className = { Styles.buttons }>
                     {/*{this.createButtonGroup(buttons)}*/}
-                    <CreateButtonGrp buttons = { buttons } />
+                    <CreateButtonGrp
+                        buttons = { buttons }
+                        replaceableComponent = { replaceableComponent }
+                    />
                 </div>
-            </section> : null
-
+            </section>) : null
         )
     }
 

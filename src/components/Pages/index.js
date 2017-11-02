@@ -4,3 +4,6 @@ export * from './CreateProject';
 export * from './Project';
 export * from '../TabsHeader';
 export * from '../RepoPreviewBlock';
+export * from './Project/EditForm';
+export * from '../Dropdown';
+export * from '../Dropdown/DropdownList';

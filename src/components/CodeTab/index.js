@@ -1,26 +1,39 @@
 import React, { Component } from 'react';
 import Styles from './styles.scss';
+import Proptypes from 'prop-types';
 
 export class CodeTab extends Component {
-    controls = {
-        commit:      0,
-        branch:      0,
-        contributor: 0
+
+    static propTypes = {
+        branches: Proptypes.array.isRequired,
+        commitsCount: Proptypes.number.isRequired,
+        contributors: Proptypes.array.isRequired
+    }
+
+    static defaultProps = {
+        branches: [],
+        commitsCount: 0,
+        contributors: []
     }
 
     renderRepoControls (controls) {
         return Object
             .keys(controls)
-            .map((control, i) =>
-                <li key = { i }><a href = '#'><span>{ controls[control] }</span>{ control }</a></li>);
+            .map((control, i) => {
+                const count = typeof controls[control] === 'object' ? controls[control].length : controls[control];
+
+                return <li key = { i }><a href = '#'><span>{ count }</span> { control }</a></li>;
+            })
     }
 
     render () {
+        const { branches, contributors, commitsCount: commits } = this.props;
+        const controls = { branches, contributors, commits };
 
         return (
             <section className = { Styles.codeDetails }>
-                { this.renderRepoControls(this.controls) }
+                { this.renderRepoControls(controls) }
             </section>
-        )
+        );
     }
 }

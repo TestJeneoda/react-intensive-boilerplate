@@ -2,16 +2,17 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 
-import {getJSON} from '../../../helpers';
+import { getJSON } from '../../../helpers';
 
 import { Dropdown } from '../../common/Dropdown';
 import { ProjectTabs } from '../../ProjectTabs';
 import { TabsHeader } from '../../TabsHeader';
 import { CodeTab } from '../../CodeTab';
+import { EditForm } from './EditForm';
 
 import Styles from './styles.scss';
 
-import { REPO_OWNER, PROJECT_NAME } from '../../../constants';
+import { REPO_OWNER } from '../../../constants';
 
 const CreateButtonGrp = (props) => props.buttons.map((button, key) => (
     <button
@@ -25,40 +26,52 @@ export class Project extends Component {
 
     state = {
         activeTab: 'Code',
-        header:    [{
-            tab:     'Code',
-            buttons: [{
-                text:      'Edit',
-                className: 'btn-default'
-            }],
-            description: 'No description, website, or topics provided.'
-        }, {
-            tab:         'Projects',
-            buttons:     [{ text: 'New Project', className: 'btn-success' }],
-            description: ''
-        }, {
-            tab:         'Wiki',
-            description: 'Home',
-            buttons:     [
-                {
-                    text:      'Edit',
-                    className: 'btn-default'
-                },
-                {
-                    text:      'New Page',
-                    className: 'btn-success'
-                }]
-        }],
+        activeComponent: false,
         tabs: ['Code', 'Projects', 'Wiki'],
         lastCommit: {},
         author: {},
         message: '',
         tree: [],
-        commitsCount: null
+        commitsCount: 0,
+        branches: [],
+        contributors: []
+    }
+
+    getHeader () {
+        return [
+            {
+                tab:     'Code',
+                replaceableComponent: (
+                    <EditForm
+                        repo = { this.props.repo }
+                        onClick = { () => this.showEditForm(false) }
+                        onRepoChange = { this.props.onRepoChange }
+                    />
+                ),
+                buttons: [{
+                    text:      'Edit',
+                    className: 'btn-default',
+                    onClick:   () => this.showEditForm(true)
+                }]
+            }, {
+                tab:     'Projects',
+                buttons: [{ text: 'New Project', className: 'btn-success' }]
+            }, {
+                tab:     'Wiki',
+                buttons: [
+                    {
+                        text:      'Edit',
+                        className: 'btn-default'
+                    },
+                    {
+                        text:      'New Page',
+                        className: 'btn-success'
+                    }]
+            }];
     }
 
     codeNavigation = {
-        branches: ['master'],
+        branches: ['hjsdjbjgagu'],
         buttons:  [
             {
                 text:      'New pull request',
@@ -80,23 +93,35 @@ export class Project extends Component {
     }
 
     static propTypes = {
-        repoName: Proptypes.string.isRequired,
-        userName: Proptypes.string.isRequired
+        changePage: Proptypes.func.isRequired,
+        repo:       Proptypes.object.isRequired,
+        userName:   Proptypes.string.isRequired,
+        onRepoChange: Proptypes.func.isRequired
     }
 
     componentWillMount () {
-        this.getRepoDetails(this.props.repoName);
+        this.getRepoDetails(this.props.repo.name);
+        this.getBranches(this.props.userName, this.props.repo.name);
+    }
+
+    // todo refactor
+    showEditForm = (option) => {
+        // const newState = [...this.state.header];
+        //
+        // newState[0].isComponentActive = option;
+        // this.setState(Object.assign({}, this.state, { header: newState }));
+        this.setState({ isComponentActive: option });
     }
 
     getRepoDetails = () => {
-        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repoName}`)
+        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repo.name}`)
             .then(getJSON)
             .then(this.getBranchDetails)
             .catch((error) => console.log(error));
     }
 
     getBranchDetails = ({ default_branch }) => {
-        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repoName}/branches/${default_branch}`)
+        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repo.name}/branches/${default_branch}`)
             .then(getJSON)
             .then(({ commit }) => {
                 this.setState({ lastCommit: commit });
@@ -108,7 +133,7 @@ export class Project extends Component {
     }
 
     getCommits = () => {
-        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repoName}/commits`)
+        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repo.name}/commits`)
             .then(getJSON)
             .then((result) => {
                 this.setState({ commitsCount: result.length })
@@ -118,7 +143,7 @@ export class Project extends Component {
 
     getTree = ({ sha, author, commit }) => {
         this.getCommits();
-        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repoName}/git/trees/${sha}`)
+        fetch(`https://api.github.com/repos/${this.props.userName}/${this.props.repo.name}/git/trees/${sha}`)
             .then(getJSON)
             .then(({ tree }) => {
                 this.setState({ tree, author, message: commit.message });
@@ -130,9 +155,19 @@ export class Project extends Component {
         this.setState({ activeTab });
     }
 
+    getBranches = (userName, repoName) => {
+        fetch(`https://api.github.com/repos/${userName}/${repoName}/branches`)
+            .then(getJSON)
+            .then((branches) => {
+                this.setState({ branches });
+            })
+            .catch((error) => console.log(error));
+    }
+
     render () {
-        const { activeTab, header, tabs, lastCommit, commitsCount, message, author, tree} = this.state;
-        console.log(this.state);
+        const { activeTab, tabs, lastCommit, isComponentActive, commitsCount, message, author, tree } = this.state;
+        const { changePage, repo } = this.props;
+
         const tabsSet = tabs.map(
             (tab, index) => (
                 <ProjectTabs
@@ -143,13 +178,15 @@ export class Project extends Component {
                 />
             ));
 
-        const tabsHeaders = header.map((item, index) => (
+        const tabsHeaders = this.getHeader().map((item, index) => (
             <TabsHeader
                 activeTab = { activeTab === item.tab }
                 buttons = { item.buttons }
                 changeActiveTab = { this.changeActiveTab }
-                description = { item.description }
+                description = { this.props.repo.description }
+                isComponentActive = { isComponentActive }
                 key = { index }
+                replaceableComponent = { item.replaceableComponent }
                 tab = { item.tab }
             />
         ));
@@ -159,8 +196,8 @@ export class Project extends Component {
             <div className = { Styles.sectionWrapper }>
                 <section className = { Styles.projectHeader }>
                     <div className = { Styles.breadCrumbs }>
-                        <h1><a href = '#'>{ REPO_OWNER }</a><span>/</span>
-                            <a className = { Styles.current } href = '#'>{ PROJECT_NAME }</a>
+                        <h1><a href = '#' onClick = { () => changePage('Profile') } >{ this.props.userName }</a><span>/</span>
+                            <a className = { Styles.current } href = '#'>{ repo.name }</a>
                         </h1>
                     </div>
                     <div className = { Styles.tabs }>
@@ -173,7 +210,11 @@ export class Project extends Component {
                     { tabsHeaders }
                 </section>
                 <div>
-                    <CodeTab />
+                    <CodeTab
+                        branches = { this.state.branches }
+                        commitsCount = { this.state.commitsCount }
+                        contributors = { this.state.contributors }
+                    />
                 </div>
                 <section className = { Styles.codeNavigation }>
                     <Dropdown className={'dropdown ' + Styles.selectBranch} />
@@ -198,8 +239,8 @@ export class Project extends Component {
                     </div>
                     <table className='table table-bordered'>
                         <tbody>
-                        {tree.map(treeItem => (
-                            <tr>
+                        {tree.map((treeItem, i) => (
+                            <tr key = { i }>
                                 <td>{treeItem.path}</td>
                                 <td>init</td>
                             </tr>

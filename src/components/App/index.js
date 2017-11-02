@@ -8,7 +8,8 @@ import React, { Component } from 'react';
 import Styles from './styles.scss';
 import Header from '../Header';
 import * as Pages from '../Pages';
-import {getJSON} from '../../helpers';
+import { getJSON } from '../../helpers';
+import { USER_CREDENTIALS } from '../../helpers/githubApi';
 
 // let options = {
 //     json: true,
@@ -21,15 +22,15 @@ import {getJSON} from '../../helpers';
 export default class App extends Component {
     constructor () {
         super();
-        this.userName = 'TestJeneoda';
-        this.userEmail = 'test.jeneoda@gmail.com';
-        this.userPasswd = '{"S4Github"}';
-        this.fields = ['name', 'clone_url', 'language', 'default_branch', 'description', 'forks', 'forks_url', 'full_name', 'git_commits_url', 'git_url', 'html_url', 'id', 'owner', 'private', 'size']; //avatar_url, id, login, repos_url, type,
+        this.userName = USER_CREDENTIALS.userName;
+        this.userEmail = USER_CREDENTIALS.userEmail;
+        this.userPasswd = USER_CREDENTIALS.userPasswd;
+        this.fields = ['name', 'clone_url', 'language', 'default_branch', 'description', 'forks', 'forks_url', 'full_name', 'git_commits_url', 'git_url', 'html_url', 'id', 'owner', 'private', 'size', 'homepage']; //avatar_url, id, login, repos_url, type,
         //this.changePage = ::this._changePage;
         this.state = {
-            currentPage: 'Profile', //Project, Create, Profile
+            currentPage: 'Home', //Project, Create, Profile
             repos:       [],
-            repoName:    null,
+            repo:        null,
             owner:       {}
         };
     }
@@ -64,15 +65,17 @@ export default class App extends Component {
         this.setState({ currentPage });
     }
 
-    changeCurrentRepo = (repoName) => {
-        this.setState({ repoName });
+    goToRepo = (repo) => {
+        this.setState({ repo });
         this.changePage('Project');
     }
+
+    onRepoChange = (newRepo) => this.setState({ repo: newRepo });
 
     render () {
         const { currentPage } = this.state;
         const { [currentPage]: Page } = Pages;
-        const { repos, owner, repoName } = this.state;
+        const { repos, owner, repo } = this.state;
 
         //console.log(this.state);
         return (
@@ -83,11 +86,12 @@ export default class App extends Component {
                 />
                 <div className = { Styles.container }>
                     <Page
-                        changeCurrentRepo = { this.changeCurrentRepo }
+                        goToRepo = { this.goToRepo }
                         changePage = { this.changePage }
                         owner = { owner }
-                        repoName = { repoName }
-                        reposData = { repos }
+                        repo =  { repo }
+                        onRepoChange = { this.onRepoChange }
+                        repos = { repos }
                         userName = { this.userName }
                     />
                 </div>
