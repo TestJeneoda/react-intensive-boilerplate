@@ -19,6 +19,23 @@ import { USER_CREDENTIALS } from '../../helpers/githubApi';
 //
 // request(options).then((result) => console.log(result));
 
+/*
+todo
+ 1. rename project to repository
+ 2. remove currentRepo
+ 3. keep all repos in state
+ 4. make component dictionary
+ -- let pages = {
+    home: 'Home',
+    project: 'Project',
+    repos: {automation: {data}, lectrum: {data}} keyBy, Object.values for for
+ }
+ 5. refactor pseudo router
+ 6. implement page reload after create/delete fetch
+
+ console.log(gh.getRepo(`${USER_CREDENTIALS.userName}/${this.props.repo.name}`)).deleteRepo(cb);
+ */
+
 export default class App extends Component {
     constructor () {
         super();
@@ -28,7 +45,7 @@ export default class App extends Component {
         this.fields = ['name', 'clone_url', 'language', 'default_branch', 'description', 'forks', 'forks_url', 'full_name', 'git_commits_url', 'git_url', 'html_url', 'id', 'owner', 'private', 'size', 'homepage']; //avatar_url, id, login, repos_url, type,
         //this.changePage = ::this._changePage;
         this.state = {
-            currentPage: 'Home', //Project, Create, Profile
+            currentPage: 'Home', //Project, Create, Profile repos/automation ('repo', data) merge with gotorepo
             repos:       [],
             repo:        null,
             owner:       {}

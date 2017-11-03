@@ -46,18 +46,18 @@ export class EditForm extends Component {
     render () {
         return (
             <section>
-                <form>
-                    <div>
-                        <label htmlFor = 'repoDescription' />Description
+                <form className = { Styles.editRepoForm }>
+                    <div className = { Styles.editRepoFormInputs }>
+                        <label htmlFor = 'repoDescription'>Description</label>
                         <input name = 'description' value = { this.state.description } type = 'text' className = { Styles.repoDescription } onChange = { this.inputHandler } />
                     </div>
-                    <div>
-                        <label htmlFor = 'repoWebsite' />Website
+                    <div className = { Styles.editRepoFormInputs }>
+                        <label htmlFor = 'repoWebsite'>Website </label>
                         <input name = 'homepage' type = 'text' value = { this.state.homepage } className = { Styles.repoWebsite } onChange = { this.inputHandler } />
                     </div>
                     <div className = { Styles.btnGroup }>
-                        <button onClick = { this.saveChanges }>Save</button>
-                        <button onClick = { this.props.onClick }>Cancel</button>
+                        <button className = { `${Styles.successBtn} btn-success btn` } onClick = { this.saveChanges }>Save</button>
+                        <button className = 'btn-default btn' onClick = { this.props.onClick }>Cancel</button>
                     </div>
                 </form>
             </section>

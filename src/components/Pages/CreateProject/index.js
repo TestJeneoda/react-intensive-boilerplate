@@ -77,10 +77,12 @@ import { USER_CREDENTIALS } from '../../../helpers/githubApi';
 export class CreateProject extends Component {
 
     static propTypes = {
-        userName: Proptypes.string.isRequired
+        changePage: Proptypes.func.isRequired,
+        userName:   Proptypes.string.isRequired
     }
 
     state = {
+        isFormDisabled:        true,
         gitignoreOptions: [],
         licenseOptions:   [],
         newRepoForm: {
@@ -110,8 +112,13 @@ export class CreateProject extends Component {
     }
 
     setInputValueHandler = ({ target }) => {
+        if (target.name === 'name') {
+            this.setState({ isFormDisabled: !target.value.length > 0 });
+        }
+
         if (target.type === 'checkbox') {
-            let value = Number(!this.state.newRepoForm.auto_init);
+            const value = Number(!this.state.newRepoForm.auto_init);
+
             this.formElementHandler(target.name, value);
 
             return;
@@ -119,27 +126,23 @@ export class CreateProject extends Component {
         this.formElementHandler(target.name, target.value);
     }
 
-    setRadioBtnHandler = ({target}) => {
-        const {name, value} = target;
+    setRadioBtnHandler = ({ target }) => {
+        const { name, value } = target;
+
         this.formElementHandler(name, Boolean(+value));
     }
 
     createRepo = (event) => {
         event.preventDefault();
         const newRepo = this.state.newRepoForm;
-        console.log(newRepo, "newRepo");
-        console.log(gh, "gh"); // getUser->create
-        // let m = gh.getUser();
-        // console.log(m.__authorizationHeader);
-        // fetch(
-        //     `http://api.github.com/users/TestJeneoda/repos`, {
-        //     method: 'GET',
-        //     //headers: { 'Authorization': m.__authorizationHeader },
-        //     body: newRepo
-        // })
-        //     .then((response) => {
-        //     console.log(response.json());
-        // })
+
+        console.log(gh.getRepo);
+
+        const repoOwner = gh.getUser(this.props.userName);
+        // console.log(repoOwner);
+        const { changePage } = this.props;
+        //
+        repoOwner.createRepo(newRepo).then(() => changePage('Project'));
     }
 
     formElementHandler = (name, value) => {
@@ -153,6 +156,8 @@ export class CreateProject extends Component {
     }
 
     render () {
+        console.log(gh.getRepo);
+
         let {license_template = '', gitignore_template = '', public:publicField} = this.state.newRepoForm;
         return (
             <div className = { Styles.projectForm } >
@@ -248,6 +253,7 @@ export class CreateProject extends Component {
                         </div>
                     </div>
                     <button
+                        disabled = { this.state.isFormDisabled }
                         className = 'btn btn-success'
                         type = 'submit'
                         onClick = { this.createRepo }>

@@ -9,6 +9,7 @@ import { ProjectTabs } from '../../ProjectTabs';
 import { TabsHeader } from '../../TabsHeader';
 import { CodeTab } from '../../CodeTab';
 import { EditForm } from './EditForm';
+import gh, { USER_CREDENTIALS } from '../../../helpers/githubApi';
 
 import Styles from './styles.scss';
 
@@ -18,7 +19,8 @@ const CreateButtonGrp = (props) => props.buttons.map((button, key) => (
     <button
         className = { button.className + ' btn' }
         key = { key }
-        type = 'button'>{ button.text }
+        type = 'button'
+        onClick = { button.onClick }>{ button.text }
     </button>));
 
 //Components
@@ -78,16 +80,13 @@ export class Project extends Component {
                 className: 'btn-default'
             },
             {
-                text:      'Create new file',
-                className: 'btn-default'
-            },
-            {
-                text:      'Upload files',
-                className: 'btn-default'
-            },
-            {
                 text:      'Clone or download',
                 className: 'btn-success'
+            },
+            {
+                text:      'Delete this repository',
+                className: 'btn-danger',
+                onClick:   () => this.deleteRepo()
             }
         ]
     }
@@ -164,6 +163,13 @@ export class Project extends Component {
             .catch((error) => console.log(error));
     }
 
+    deleteRepo = () => {
+        const repoOwner = gh.getRepo(`${USER_CREDENTIALS.userName}/${this.props.repo.name}`);
+        const { changePage } = this.props;
+
+        repoOwner.deleteRepo(() => changePage('Profile'));
+    }
+
     render () {
         const { activeTab, tabs, lastCommit, isComponentActive, commitsCount, message, author, tree } = this.state;
         const { changePage, repo } = this.props;
@@ -217,7 +223,7 @@ export class Project extends Component {
                     />
                 </div>
                 <section className = { Styles.codeNavigation }>
-                    <Dropdown className={'dropdown ' + Styles.selectBranch} />
+                    <Dropdown className = { 'dropdown ' + Styles.selectBranch} />
                     <div className = { Styles.buttonGroup }>
                         <CreateButtonGrp buttons = { this.codeNavigation.buttons } />
                     </div>
