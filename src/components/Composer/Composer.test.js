@@ -11,6 +11,10 @@ const options = {
     avatar:    'random avatar url'
 };
 
+const props = {
+    createPost: jest.fn()
+};
+
 const message = 'Merry christmas!';
 const state = {
     comment:           '',
@@ -21,7 +25,7 @@ const mutatedState = {
     avatarBorderColor: '#90949C'
 };
 
-const result = mount(<Composer createPost = { () => null } />, {
+const result = mount(<Composer { ...props } />, {
     context: options
 });
 
@@ -86,5 +90,9 @@ describe('Composer component:', () => {
         result.find('form').simulate('submit');
 
         expect(result.state()).toEqual(state);
+    });
+
+    test('createPost method pased as a prop should be invoked once after the form is submitted', () => {
+        expect(props.createPost.mock.calls.length).toBe(1);
     });
 });
