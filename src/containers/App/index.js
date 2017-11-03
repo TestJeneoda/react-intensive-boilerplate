@@ -13,7 +13,7 @@ const GROUP_ID = '';
 const TOKEN = '';
 
 const options = {
-    api:       `https://lab.lectrum.io/api/feed/${GROUP_ID}`,
+    api:       `https://lab.lectrum.io/react/api/${GROUP_ID}`,
     avatar,
     firstName: 'Homer',
     lastName:  'Simpson',
