@@ -32,6 +32,7 @@ todo
  }
  5. refactor pseudo router
  6. implement page reload after create/delete fetch
+ 7. all fetch operations move to helper that will return result and then use state
 
  console.log(gh.getRepo(`${USER_CREDENTIALS.userName}/${this.props.repo.name}`)).deleteRepo(cb);
  */
@@ -45,7 +46,7 @@ export default class App extends Component {
         this.fields = ['name', 'clone_url', 'language', 'default_branch', 'description', 'forks', 'forks_url', 'full_name', 'git_commits_url', 'git_url', 'html_url', 'id', 'owner', 'private', 'size', 'homepage']; //avatar_url, id, login, repos_url, type,
         //this.changePage = ::this._changePage;
         this.state = {
-            currentPage: 'Home', //Project, Create, Profile repos/automation ('repo', data) merge with gotorepo
+            currentPage: 'Profile', //Project, Create, Profile repos/automation ('repo', data) merge with gotorepo
             repos:       [],
             repo:        null,
             owner:       {}
@@ -79,11 +80,13 @@ export default class App extends Component {
 
     changePage = (currentPage) => {
         // todo check current page
+        this.getRepos();
+        this.getOwnerData();
         this.setState({ currentPage });
     }
 
     goToRepo = (repo) => {
-        this.setState({ repo });
+        this.setState({ repo: _.pick(repo, this.fields) });
         this.changePage('Project');
     }
 
@@ -109,6 +112,7 @@ export default class App extends Component {
                         repo =  { repo }
                         onRepoChange = { this.onRepoChange }
                         repos = { repos }
+                        getRepos = { this.getRepos }
                         userName = { this.userName }
                     />
                 </div>

@@ -26,6 +26,8 @@ export class Profile extends Component {
     render () {
         const { login, avatar_url: avatarUrl } = this.props.owner;
 
+        console.log(this.props.repos);
+
         return (
             <div className = { Styles.mainWrapper }>
                 <section className = { Styles.profileWrapper }>

@@ -167,7 +167,7 @@ export class Project extends Component {
         const repoOwner = gh.getRepo(`${USER_CREDENTIALS.userName}/${this.props.repo.name}`);
         const { changePage } = this.props;
 
-        repoOwner.deleteRepo(() => changePage('Profile'));
+        repoOwner.deleteRepo().then(() => changePage('Profile'));
     }
 
     render () {

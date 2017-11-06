@@ -78,6 +78,8 @@ export class CreateProject extends Component {
 
     static propTypes = {
         changePage: Proptypes.func.isRequired,
+        goToRepo:   Proptypes.func.isRequired,
+        repos:      Proptypes.array.isRequired,
         userName:   Proptypes.string.isRequired
     }
 
@@ -91,10 +93,11 @@ export class CreateProject extends Component {
             name:               '',
             description:        '',
             public:             true
-        }
+        },
+        validation: 0
     }
 
-    getGitignoreOptions = () => this.setState({ gitignoreOptions: TEMP_DATA.gitignore})
+    getGitignoreOptions = () => this.setState({ gitignoreOptions: TEMP_DATA.gitignore })
         // fetch(`${GITHUB_URL}/gitignore/templates`)
         // .then(getJSON)
         // .then((gitignoreOptions) => this.setState({ gitignoreOptions }))
@@ -112,8 +115,19 @@ export class CreateProject extends Component {
     }
 
     setInputValueHandler = ({ target }) => {
+        this.setState({ validation: 0 });
+        const { repos } = this.props;
+        const repoNameDuplicate = repos.find(({ name }) => name === target.value);
+
+
         if (target.name === 'name') {
             this.setState({ isFormDisabled: !target.value.length > 0 });
+        }
+
+        if (repoNameDuplicate) {
+            this.setState({
+                validation:     'Repository with this name already exists',
+                isFormDisabled: true });
         }
 
         if (target.type === 'checkbox') {
@@ -135,30 +149,29 @@ export class CreateProject extends Component {
     createRepo = (event) => {
         event.preventDefault();
         const newRepo = this.state.newRepoForm;
-
-        console.log(gh.getRepo);
-
         const repoOwner = gh.getUser(this.props.userName);
-        // console.log(repoOwner);
-        const { changePage } = this.props;
-        //
-        repoOwner.createRepo(newRepo).then(() => changePage('Project'));
+        const { goToRepo } = this.props;
+
+        // console.log(gh.getRepo);
+        repoOwner.createRepo(newRepo).then(({ status, data }) => {
+            if (status === 201) {
+                goToRepo(data);
+            }
+        }).catch((error) => console.log(error.message));
     }
 
     formElementHandler = (name, value) => {
         const newForm = Object.assign({}, this.state.newRepoForm, { [name]: value });
 
         this.setState({ newRepoForm: newForm });
-        //
-        // setTimeout(() => {
-        //     console.log(this.state);
-        // }, 2000)
     }
 
     render () {
-        console.log(gh.getRepo);
+        //console.log(gh.getRepo);
+        const { license_template = '', gitignore_template = '', public:publicField } = this.state.newRepoForm;
+        const { validation } = this.state;
+        const validationMessage = validation ? <p>{validation}</p> : null;
 
-        let {license_template = '', gitignore_template = '', public:publicField} = this.state.newRepoForm;
         return (
             <div className = { Styles.projectForm } >
                 <form>
@@ -254,10 +267,11 @@ export class CreateProject extends Component {
                     </div>
                     <button
                         disabled = { this.state.isFormDisabled }
+                        validation = { this.state.validation }
                         className = 'btn btn-success'
                         type = 'submit'
                         onClick = { this.createRepo }>
-                        Create repository</button>
+                        Create repository</button>{validationMessage}
                 </form>
             </div>
         )
