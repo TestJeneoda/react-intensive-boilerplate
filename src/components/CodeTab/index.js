@@ -6,13 +6,13 @@ export class CodeTab extends Component {
 
     static propTypes = {
         branches: Proptypes.array.isRequired,
-        commitsCount: Proptypes.number.isRequired,
+        commits: Proptypes.array.isRequired,
         contributors: Proptypes.array.isRequired
     }
 
     static defaultProps = {
         branches: [],
-        commitsCount: 0,
+        commits: [],
         contributors: []
     }
 
@@ -20,14 +20,14 @@ export class CodeTab extends Component {
         return Object
             .keys(controls)
             .map((control, i) => {
-                const count = typeof controls[control] === 'object' ? controls[control].length : controls[control];
+                const count = controls[control].length;
 
                 return <li key = { i }><a href = '#'><span>{ count }</span> { control }</a></li>;
             })
     }
 
     render () {
-        const { branches, contributors, commitsCount: commits } = this.props;
+        const { branches, contributors, commits } = this.props;
         const controls = { branches, contributors, commits };
 
         return (

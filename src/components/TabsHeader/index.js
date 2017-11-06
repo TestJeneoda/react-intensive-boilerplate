@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import Styles from './styles.scss';
-import { EditForm } from '../Pages/Project/EditForm';
+import { EditForm } from '../Pages/Repo/EditForm';
 
 const CreateButtonGrp = (props) => {
     return props.buttons.map((button, key) =>
@@ -14,7 +14,7 @@ export class TabsHeader extends Component {
         activeTab:       Proptypes.bool.isRequired,
         buttons:         Proptypes.array.isRequired,
         changeActiveTab: Proptypes.func.isRequired,
-        description:     Proptypes.string.isRequired,
+        description:     Proptypes.string,
         isComponentActive: Proptypes.bool,
         replaceableComponent: Proptypes.element
     }

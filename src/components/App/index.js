@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import Styles from './styles.scss';
 import Header from '../Header';
 import * as Pages from '../Pages';
-import { getJSON } from '../../helpers';
+import { getUser } from '../../actions';
 import { USER_CREDENTIALS } from '../../helpers/githubApi';
 
 // let options = {
@@ -27,7 +27,7 @@ todo
  4. make component dictionary
  -- let pages = {
     home: 'Home',
-    project: 'Project',
+    project: 'Repo',
     repos: {automation: {data}, lectrum: {data}} keyBy, Object.values for for
  }
  5. refactor pseudo router
@@ -46,7 +46,7 @@ export default class App extends Component {
         this.fields = ['name', 'clone_url', 'language', 'default_branch', 'description', 'forks', 'forks_url', 'full_name', 'git_commits_url', 'git_url', 'html_url', 'id', 'owner', 'private', 'size', 'homepage']; //avatar_url, id, login, repos_url, type,
         //this.changePage = ::this._changePage;
         this.state = {
-            currentPage: 'Profile', //Project, Create, Profile repos/automation ('repo', data) merge with gotorepo
+            currentPage: 'Profile', //Repo, Create, Profile repos/automation ('repo', data) merge with gotorepo
             repos:       [],
             repo:        null,
             owner:       {}
@@ -54,50 +54,26 @@ export default class App extends Component {
     }
 
     componentWillMount () {
-        this.getRepos();
-        this.getOwnerData();
+        getUser(this.userName).then((result) => this.setState({ owner: result }));
     }
 
-    getOwnerData = () => {
-        fetch(`https://api.github.com/users/${this.userName}`, { method: 'GET' })
-            .then(getJSON)
-            .then((result) => {
-                this.setState({ owner: result });
-            })
-            .catch((error) => console.log(error));
+    changePage = (pageName, data) => {
+        this.setState({ currentPage: pageName, pageData: data });
+        // this.setState([{ currentPage: pageName }, { pageData: data }]);
     }
 
-    getRepos = () => {
-        fetch(`https://api.github.com/users/${this.userName}/repos`, { method: 'GET' })
-            .then(getJSON)
-            .then((result) => {
-                const reposData = result.map((item) => _.pick(item, this.fields));
+    // goToRepo = (repo) => {
+    //     this.setState({ repo: _.pick(repo, this.fields) });
+    //     this.changePage('Repo');
+    // }
 
-                this.setState({ repos: reposData });
-            })
-            .catch((error) => console.log(error));
-    }
-
-    changePage = (currentPage) => {
-        // todo check current page
-        this.getRepos();
-        this.getOwnerData();
-        this.setState({ currentPage });
-    }
-
-    goToRepo = (repo) => {
-        this.setState({ repo: _.pick(repo, this.fields) });
-        this.changePage('Project');
-    }
-
-    onRepoChange = (newRepo) => this.setState({ repo: newRepo });
+    // onRepoChange = (newRepo) => this.setState({ repo: newRepo });
 
     render () {
         const { currentPage } = this.state;
         const { [currentPage]: Page } = Pages;
-        const { repos, owner, repo } = this.state;
+        const { owner } = this.state;
 
-        //console.log(this.state);
         return (
             <section className = { Styles.app }>
                 <Header
@@ -106,13 +82,9 @@ export default class App extends Component {
                 />
                 <div className = { Styles.container }>
                     <Page
-                        goToRepo = { this.goToRepo }
+                        pageData = { this.state.pageData }
                         changePage = { this.changePage }
                         owner = { owner }
-                        repo =  { repo }
-                        onRepoChange = { this.onRepoChange }
-                        repos = { repos }
-                        getRepos = { this.getRepos }
                         userName = { this.userName }
                     />
                 </div>

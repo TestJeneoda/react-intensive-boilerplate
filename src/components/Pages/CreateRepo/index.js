@@ -74,7 +74,7 @@ const TEMP_DATA = {
 
 import { getJSON } from '../../../helpers';
 import { USER_CREDENTIALS } from '../../../helpers/githubApi';
-export class CreateProject extends Component {
+export class CreateRepo extends Component {
 
     static propTypes = {
         changePage: Proptypes.func.isRequired,

@@ -1,9 +1,12 @@
 export * from './Home';
 export * from './Profile';
-export * from './CreateProject';
-export * from './Project';
-export * from '../TabsHeader';
+export * from './CreateRepo';
+export * from './Repo';
 export * from '../RepoPreviewBlock';
-export * from './Project/EditForm';
+
+// common
 export * from '../Dropdown';
 export * from '../Dropdown/DropdownList';
+export * from '../TabsHeader';
+
+//todo move common components to common
