@@ -1,5 +1,5 @@
-export const newProjectDropdownValues = {
-    gitignore: {
+export const newProjectDropDownValues = {
+    gitIgnore: {
         name:         'gitignore_template',
         defaultValue: 'None',
         placeholder:  'Add .gitignore:'
@@ -9,4 +9,4 @@ export const newProjectDropdownValues = {
         defaultValue: 'None',
         placeholder:  'Add a license:'
     }
-}
+};

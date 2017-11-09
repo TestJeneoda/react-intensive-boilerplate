@@ -21,6 +21,6 @@ export class DropdownBtn extends Component {
                 {this.props.placeholder} <b>{this.props.value}</b>
                 <span className = 'caret' />
             </button>
-        )
+        );
     }
 }

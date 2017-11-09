@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import Styles from './styles.scss';
 import Proptypes from 'prop-types';
+import Styles from './styles.scss';
 
 export class CodeTab extends Component {
 
     static propTypes = {
-        branches: Proptypes.array.isRequired,
-        commits: Proptypes.array.isRequired,
+        branches:     Proptypes.array.isRequired,
+        commits:      Proptypes.array.isRequired,
         contributors: Proptypes.array.isRequired
     }
 
     static defaultProps = {
-        branches: [],
-        commits: [],
+        branches:     [],
+        commits:      [],
         contributors: []
     }
 
@@ -23,7 +23,7 @@ export class CodeTab extends Component {
                 const count = controls[control].length;
 
                 return <li key = { i }><a href = '#'><span>{ count }</span> { control }</a></li>;
-            })
+            });
     }
 
     render () {

@@ -1,0 +1,25 @@
+.loaderWrapper {
+  position: absolute;
+  background: rgba(255, 255, 255, .5);
+  text-align: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+.loader {
+  left: 0;
+  right: 0;
+  width: 100%;
+  position: absolute;
+  top: 30%;
+}
+.loaderCat {
+
+}
+.loaderText {
+  font-size: 30px;
+}

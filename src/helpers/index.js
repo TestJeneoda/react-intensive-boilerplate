@@ -25,5 +25,6 @@ export function getJSON (result) {
     if (result.status !== 200) {
         throw new Error('FAIL');
     }
+
     return result.json();
 }

@@ -1,9 +1,7 @@
-// Core
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import Styles from './styles.scss';
 
-//Components
 export class ProjectTabs extends Component {
 
     static propTypes = {
@@ -20,7 +18,6 @@ export class ProjectTabs extends Component {
                 className = { activeTab ? 'active' : null }
                 role = 'presentation'>
                 <a className = { activeTab ? Styles.active : null } href = '#' onClick = { () => changeActiveTab(tab) }>{tab}</a></li>
-        )
+        );
     }
-
 }

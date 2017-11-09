@@ -1,32 +1,23 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import gh, { USER_CREDENTIALS } from '../../../helpers/githubApi';
-import { getJSON } from '../../../helpers';
 import Styles from './styles.scss';
 
 export class EditForm extends Component {
+    static propTypes = {
+        repo:         Proptypes.object.isRequired,
+        onClick:      Proptypes.func.isRequired,
+        onRepoChange: Proptypes.func.isRequired
+    }
+
     constructor (props) {
         super();
         this.state = {
             description: props.repo.description,
-            homepage: props.repo.homepage,
-            name: props.repo.name
-        }
+            homepage:    props.repo.homepage,
+            name:        props.repo.name
+        };
     }
-
-    static propTypes = {
-        onClick: Proptypes.func.isRequired,
-        repo: Proptypes.object.isRequired,
-        onRepoChange: Proptypes.func.isRequired
-    }
-
-    // componentWillReceiveProps(nextProps) {
-    //     // this.setState({
-    //     //     description: nextProps.description,
-    //     //     homepage: nextProps.homepage,
-    //     //     name: nextProps.name
-    //     // });
-    // }
 
     inputHandler = ({ target }) => {
         const { name, value } = target;
@@ -37,23 +28,38 @@ export class EditForm extends Component {
     saveChanges = (event) => {
         event.preventDefault();
         const repoActions = gh.getRepo(`${USER_CREDENTIALS.userName}/${this.props.repo.name}`);
+
         repoActions.updateRepository(this.state).then((result) => {
-            this.props.onRepoChange(result.data)
-            this.props.onClick()
+            this.props.onRepoChange(result.data);
+            this.props.onClick();
         });
     }
 
     render () {
+        const { homepage, description } = this.state;
+
         return (
             <section>
                 <form className = { Styles.editRepoForm }>
                     <div className = { Styles.editRepoFormInputs }>
                         <label htmlFor = 'repoDescription'>Description</label>
-                        <input name = 'description' value = { this.state.description } type = 'text' className = { Styles.repoDescription } onChange = { this.inputHandler } />
+                        <input
+                            className = { Styles.repoDescription }
+                            name = 'description'
+                            type = 'text'
+                            value = { description }
+                            onChange = { this.inputHandler }
+                        />
                     </div>
                     <div className = { Styles.editRepoFormInputs }>
                         <label htmlFor = 'repoWebsite'>Website </label>
-                        <input name = 'homepage' type = 'text' value = { this.state.homepage } className = { Styles.repoWebsite } onChange = { this.inputHandler } />
+                        <input
+                            className = { Styles.repoWebsite }
+                            name = 'homepage'
+                            type = 'text'
+                            value = { homepage }
+                            onChange = { this.inputHandler }
+                        />
                     </div>
                     <div className = { Styles.btnGroup }>
                         <button className = { `${Styles.successBtn} btn-success btn` } onClick = { this.saveChanges }>Save</button>
@@ -61,7 +67,6 @@ export class EditForm extends Component {
                     </div>
                 </form>
             </section>
-        )
+        );
     }
 }
-

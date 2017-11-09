@@ -12,6 +12,6 @@ export class DropdownList extends Component {
     render () {
         return (
             <li><span>{this.props.value}</span></li>
-        )
+        );
     }
 }

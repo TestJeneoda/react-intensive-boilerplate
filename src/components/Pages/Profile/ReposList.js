@@ -10,5 +10,5 @@ export const ReposList = ({ repos, changePage, ...rest }) => repos.map((repo, ke
             <p className = { Styles.repoDesc }>{ description }</p>
             <p className = { language ? Styles.repoLang : null }>{ language }</p>
         </div>
-    )
+    );
 });

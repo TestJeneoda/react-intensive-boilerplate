@@ -19,11 +19,9 @@ export class Home extends Component {
                         write comments, and open a pull request.</p>
                     <p><a
                         className = 'btn btn-success btn-lg' href = '#' role = 'button'
-                        onClick = { () => changePage('CreateProject') }>Start a project</a></p>
+                        onClick = { () => changePage('CreateRepo') }>Start a project</a></p>
                 </div>
             </div>
-        )
+        );
     }
 }
-
-

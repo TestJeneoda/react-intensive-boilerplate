@@ -1,133 +1,49 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
-import Styles from './styles.scss';
-import { REPO_OWNER, GITHUB_URL } from '../../../constants';
-import book from '../../../theme/assets/repo.png';
-import lock from '../../../theme/assets/lock.png';
 import { Dropdown } from '../../Dropdown';
-import { newProjectDropdownValues } from '../../Dropdown/dropdownValues';
-const { gitignore, license } = newProjectDropdownValues;
 import gh from '../../../helpers/githubApi';
+import Styles from './styles.scss';
+import { newProjectDropDownValues } from '../../Dropdown/dropdownValues';
+import lock from '../../../theme/assets/lock.png';
+import book from '../../../theme/assets/repo.png';
+import { getGitignoreOptions, getLicenseOptions } from '../../../actions';
+const { gitIgnore, license } = newProjectDropDownValues;
 
-const TEMP_DATA = {
-    licenses: [
-        {
-            "key": "mit",
-            "name": "MIT License",
-            "spdx_id": "MIT",
-            "url": "https://api.github.com/licenses/mit",
-            "featured": true
-        },
-        {
-            "key": "lgpl-3.0",
-            "name": "GNU Lesser General Public License v3.0",
-            "spdx_id": "LGPL-3.0",
-            "url": "https://api.github.com/licenses/lgpl-3.0",
-            "featured": false
-        },
-        {
-            "key": "mpl-2.0",
-            "name": "Mozilla Public License 2.0",
-            "spdx_id": "MPL-2.0",
-            "url": "https://api.github.com/licenses/mpl-2.0",
-            "featured": false
-        },
-        {
-            "key": "agpl-3.0",
-            "name": "GNU Affero General Public License v3.0",
-            "spdx_id": "AGPL-3.0",
-            "url": "https://api.github.com/licenses/agpl-3.0",
-            "featured": false
-        },
-        {
-            "key": "unlicense",
-            "name": "The Unlicense",
-            "spdx_id": "Unlicense",
-            "url": "https://api.github.com/licenses/unlicense",
-            "featured": false
-        },
-        {
-            "key": "apache-2.0",
-            "name": "Apache License 2.0",
-            "spdx_id": "Apache-2.0",
-            "url": "https://api.github.com/licenses/apache-2.0",
-            "featured": true
-        },
-        {
-            "key": "gpl-3.0",
-            "name": "GNU General Public License v3.0",
-            "spdx_id": "GPL-3.0",
-            "url": "https://api.github.com/licenses/gpl-3.0",
-            "featured": true
-        }
-    ],
-    gitignore: [
-        "Actionscript",
-        "Android",
-        "AppceleratorTitanium",
-        "Autotools",
-        "Bancha",
-        "C",
-        "C++"
-    ]
-}
-
-import { getJSON } from '../../../helpers';
-import { USER_CREDENTIALS } from '../../../helpers/githubApi';
 export class CreateRepo extends Component {
 
     static propTypes = {
         changePage: Proptypes.func.isRequired,
-        goToRepo:   Proptypes.func.isRequired,
-        repos:      Proptypes.array.isRequired,
         userName:   Proptypes.string.isRequired
     }
 
     state = {
-        isFormDisabled:        true,
-        gitignoreOptions: [],
+        isFormDisabled:   true,
+        gitIgnoreOptions: [],
         licenseOptions:   [],
-        newRepoForm: {
-            auto_init:          0,
-            owner:              this.props.userName,
-            name:               '',
-            description:        '',
-            public:             true
+        newRepoForm:      {
+            'auto_init': 0,
+            owner:       this.props.userName,
+            name:        '',
+            description: '',
+            public:      true
         },
         validation: 0
     }
 
-    getGitignoreOptions = () => this.setState({ gitignoreOptions: TEMP_DATA.gitignore })
-        // fetch(`${GITHUB_URL}/gitignore/templates`)
-        // .then(getJSON)
-        // .then((gitignoreOptions) => this.setState({ gitignoreOptions }))
-        // .catch((e) => console.log(e));
-
-    getLicenseOptions = () => this.setState({ licenseOptions: TEMP_DATA.licenses.map(({key, name}) => ({value: key, text: name}))})
-        // fetch(`${GITHUB_URL}/licenses`)
-        // .then(getJSON)
-        // .then((licenseOptions) => this.setState({ licenseOptions }))
-        // .catch((e) => console.log(e));
-
     componentWillMount () {
-        this.getGitignoreOptions();
-        this.getLicenseOptions();
+        getGitignoreOptions().then((gitIgnoreOptions) => this.setState({ gitIgnoreOptions })).catch((e) => console.log(e));
+        getLicenseOptions().then((licenseOptions) => {
+            const options = licenseOptions.map((licenseOption) => ({ value: licenseOption.key, text: licenseOption.name }));
+
+            this.setState({ licenseOptions: options });
+        }).catch((e) => console.log(e));
     }
 
     setInputValueHandler = ({ target }) => {
         this.setState({ validation: 0 });
-        const { repos } = this.props;
-        const repoNameDuplicate = repos.find(({ name }) => name === target.value);
-
 
         if (target.name === 'name') {
             this.setState({ isFormDisabled: !target.value.length > 0 });
-        }
-
-        if (repoNameDuplicate) {
-            this.setState({
-                validation:     'Repository with this name already exists',
-                isFormDisabled: true });
         }
 
         if (target.type === 'checkbox') {
@@ -143,21 +59,26 @@ export class CreateRepo extends Component {
     setRadioBtnHandler = ({ target }) => {
         const { name, value } = target;
 
-        this.formElementHandler(name, Boolean(+value));
+        this.formElementHandler(name, Boolean(Number(value)));
     }
 
     createRepo = (event) => {
         event.preventDefault();
         const newRepo = this.state.newRepoForm;
-        const repoOwner = gh.getUser(this.props.userName);
-        const { goToRepo } = this.props;
+        const { changePage, userName } = this.props;
+        const repoOwner = gh.getUser(userName);
 
-        // console.log(gh.getRepo);
         repoOwner.createRepo(newRepo).then(({ status, data }) => {
             if (status === 201) {
-                goToRepo(data);
+                changePage('Repo', data);
             }
-        }).catch((error) => console.log(error.message));
+        }).catch((error) => {
+            this.setState({
+                validation:     'Repository with this name already exists',
+                isFormDisabled: true
+            });
+            console.log(error.message);
+        });
     }
 
     formElementHandler = (name, value) => {
@@ -167,9 +88,9 @@ export class CreateRepo extends Component {
     }
 
     render () {
-        //console.log(gh.getRepo);
-        const { license_template = '', gitignore_template = '', public:publicField } = this.state.newRepoForm;
-        const { validation } = this.state;
+
+        const { license_template: licenseTemplate = '', gitignore_template: gitignoreTemplate = '', public: publicField } = this.state.newRepoForm;
+        const { validation, licenseOptions, gitIgnoreOptions } = this.state;
         const validationMessage = validation ? <p>{validation}</p> : null;
 
         return (
@@ -182,7 +103,13 @@ export class CreateRepo extends Component {
                     <div className = { Styles.repositoryPath }>
                         <div className = 'form-group'>
                             <label htmlFor = 'exampleInputEmail1'>Owner</label>
-                            <input disabled className = 'form-control' id = 'exampleInputEmail1' type = 'text' value = { this.props.userName } />
+                            <input
+                                disabled
+                                className = 'form-control'
+                                id = 'exampleInputEmail1'
+                                type = 'text'
+                                value = { this.props.userName }
+                            />
                             <span> / </span>
                         </div>
                         <div className = 'form-group'>
@@ -210,27 +137,27 @@ export class CreateRepo extends Component {
                         <div className = 'radio'>
                             <label>
                                 <input
-                                    checked={publicField}
+                                    checked = { publicField }
                                     name = 'public'
                                     type = 'radio'
                                     value = '1'
                                     onChange = { this.setRadioBtnHandler }
                                 />
                                 <p><img className = { Styles.publicImg } src = { book } />Public</p>
-                                <p>Option one is this and that&mdash;be sure to include why it's great</p>
+                                <p>Option one is this and that&mdash;be sure to include why it is great</p>
                             </label>
                         </div>
                         <div className = 'radio'>
                             <label>
                                 <input
-                                    checked={!publicField}
+                                    checked = { !publicField }
                                     name = 'public'
                                     type = 'radio'
                                     value = '0'
                                     onChange = { this.setRadioBtnHandler }
                                 />
                                 <p><img className = { Styles.privateImg } src = { lock } />Private</p>
-                                <p>Option one is this and that&mdash;be sure to include why it's great</p>
+                                <p>Option one is this and that&mdash;be sure to include why it is great</p>
                             </label>
                         </div>
                     </div>
@@ -250,32 +177,30 @@ export class CreateRepo extends Component {
                         </div>
                         <div className = { Styles.footerDropDowns }>
                             <Dropdown
-                                data = { gitignore }
-                                value = { gitignore_template }
-                                options = { this.state.gitignoreOptions }
+                                data = { gitIgnore }
+                                options = { gitIgnoreOptions }
+                                value = { gitignoreTemplate }
                                 onChange = { this.formElementHandler }
                             />
                             <span>|</span>
                             <Dropdown
                                 data = { license }
-                                value = { license_template }
-                                options = { this.state.licenseOptions }
+                                options = { licenseOptions }
+                                value = { licenseTemplate }
                                 onChange = { this.formElementHandler }
                             />
                             <i aria-hidden = 'true' className = 'fa fa-info-circle' />
                         </div>
                     </div>
                     <button
-                        disabled = { this.state.isFormDisabled }
-                        validation = { this.state.validation }
                         className = 'btn btn-success'
+                        disabled = { this.state.isFormDisabled }
                         type = 'submit'
+                        validation = { validation }
                         onClick = { this.createRepo }>
                         Create repository</button>{validationMessage}
                 </form>
             </div>
-        )
+        );
     }
-
 }
-

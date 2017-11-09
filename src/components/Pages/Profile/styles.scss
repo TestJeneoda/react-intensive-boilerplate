@@ -93,4 +93,35 @@
       }
     }
   }
+
+  .noSearchResults {
+
+    .searchResults-appear {
+      opacity: 0;
+    }
+
+    .searchResults-appear-active {
+      opacity: 1;
+      transition: opacity .9s ease-in;
+    }
+
+    //.noSearchResults {
+    //  margin: 0 auto;
+    //  text-align: center;
+    //
+    //  i {
+    //    font-size: 30px;
+    //  }
+    //
+    //  p {
+    //    margin: 20px 0 !important;
+    //    color: royalblue !important;
+    //    font-weight: 900 !important;
+    //  }
+    //}
+
+  }
+
+
+
 }

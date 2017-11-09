@@ -16,7 +16,7 @@ export class Dropdown extends Component {
         super(props);
         this.state = {
             active: false
-        }
+        };
     }
 
     renderDropdownOptions = () => this.props.options.map((item, i) => {
@@ -34,7 +34,7 @@ export class Dropdown extends Component {
         this.props.onChange(name, value);
     }
 
-    toggleDropdown = ({ target }) => {
+    toggleDropdown = () => {
         const { active } = this.state;
 
         this.setState({ active: !active });
@@ -58,6 +58,6 @@ export class Dropdown extends Component {
                     { this.renderDropdownOptions() }
                 </ul>
             </div>
-        )
+        );
     }
 }
