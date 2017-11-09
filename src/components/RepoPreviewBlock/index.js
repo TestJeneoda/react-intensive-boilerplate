@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
-import Styles from './styles.scss';
 
 export class RepoPreview extends Component {
 
@@ -13,7 +12,7 @@ export class RepoPreview extends Component {
         const { repoDesc, repoName } = this.props;
 
         return (
-            <div className = { Styles.repoPreview }>
+            <div>
                 <h2>{ repoName }</h2>
                 <p>{ repoDesc }</p>
             </div>

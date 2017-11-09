@@ -9,17 +9,20 @@
   width: 100%;
   height: 100%;
   z-index: 9999;
-}
-.loader {
-  left: 0;
-  right: 0;
-  width: 100%;
-  position: absolute;
-  top: 30%;
-}
-.loaderCat {
 
+  .loader {
+    left: 0;
+    right: 0;
+    width: 100%;
+    position: absolute;
+    top: 30%;
+  }
+
+  .loaderText {
+    font-size: 30px;
+  }
 }
-.loaderText {
-  font-size: 30px;
+
+.caret {
+  margin-left: 5px;
 }

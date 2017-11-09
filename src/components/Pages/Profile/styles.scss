@@ -1,8 +1,10 @@
 .profileWrapper {
   padding: 20px 10% 0;
+
   .leftCol {
     width: 230px;
     float: left;
+
     .avatar {
       img {
         width: 100%;      }
@@ -23,11 +25,13 @@
     display: block;
     border-bottom: 1px #ccc solid;
     margin: 0 0 30px;
+
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
       font-size: 0;
+
       li {
         display: inline-block;
         a {
@@ -42,19 +46,19 @@
             color: #2a2d34
           }
         }
+
         span {
           font-size: 15px;
           font-weight: 700;
         }
       }
     }
+
     .active {
       border-bottom-color: #e36209;
     }
   }
-  .repoList {
 
-  }
   .repo {
     width: 359px;
     height: 129px;
@@ -64,6 +68,7 @@
     border-radius: 3px;
     float: left;
     margin: 10px 10px 0 0;
+
     .repoTitle {
       margin: 5px 0;
       font-weight: bold;
@@ -94,34 +99,20 @@
     }
   }
 
-  .noSearchResults {
+    .noSearchResults {
+      margin: 0 auto;
+      text-align: center;
 
-    .searchResults-appear {
-      opacity: 0;
+      i {
+        font-size: 30px;
+      }
+
+      p {
+        margin: 20px 0 !important;
+        color: royalblue !important;
+        font-weight: 900 !important;
+      }
     }
-
-    .searchResults-appear-active {
-      opacity: 1;
-      transition: opacity .9s ease-in;
-    }
-
-    //.noSearchResults {
-    //  margin: 0 auto;
-    //  text-align: center;
-    //
-    //  i {
-    //    font-size: 30px;
-    //  }
-    //
-    //  p {
-    //    margin: 20px 0 !important;
-    //    color: royalblue !important;
-    //    font-weight: 900 !important;
-    //  }
-    //}
-
-  }
-
 
 
 }

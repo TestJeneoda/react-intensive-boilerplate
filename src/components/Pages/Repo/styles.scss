@@ -2,6 +2,52 @@
   background-color: #fafbfc;
   padding-bottom: 0;
 
+  .cloneRepoDDWrapper {
+    position: absolute;
+    top: 35px;
+    left: 0;
+    width: 350px;
+    background: #fff;
+    padding: 10px 10px 50px;
+    border: 1px rgba(204, 204, 204, 0.56) solid;
+    z-index: 9999;
+    border-radius: 5px;
+  }
+  .cloneRepoDDTitle {
+    font-size: 16px;
+    margin: 0 0 10px;
+    font-weight: bold;
+  }
+  .cloneRepoDDContent {
+    font-size: 12px;
+
+    p {
+      margin: 0 0 10px;
+    }
+
+    input {
+      font-size: 12px;
+    }
+  }
+  .cloneRepoDDLink {
+    display: block;
+    border-top: 1px rgba(204, 204, 204, 0.56) solid;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    padding: 7px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  .cloneRepoDDLink:hover {
+    background: #337ab7;
+    color: #fff;
+  }
+
   .projectHeader {
     display: flex;
     flex-direction: column;

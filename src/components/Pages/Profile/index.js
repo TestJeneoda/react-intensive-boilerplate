@@ -4,7 +4,6 @@ import { ReposList } from './ReposList';
 import { getRepos } from '../../../actions';
 import Styles from './styles.scss';
 import Loader from '../../common/Loader';
-import { CSSTransition } from 'react-transition-group';
 
 export class Profile extends Component {
 
@@ -53,22 +52,18 @@ export class Profile extends Component {
         if (repoListIsLoading) {
             return <Loader />;
         }
-        const displayRepos = foundRepos.length ? foundRepos : repos;
 
+        const displayRepos = foundRepos.length ? foundRepos : repos;
         const searchResult = foundRepos.length ?
             <ReposList
                 changePage = { changePage }
                 className = { Styles.repo }
                 repos = { displayRepos }
             />
-            :
-            <CSSTransition
-                timeout = { 1000 }>
-                <section className = { Styles.noSearchResults } key = 'transition'>
-                    <i aria-hidden = 'true' className = 'fa fa-search' />
-                    <h3>We couldn’t find any repositories matching <p>{repoSearchValue}</p></h3>
-                </section>
-            </CSSTransition >;
+            : <section className = { Styles.noSearchResults }>
+                <i aria-hidden = 'true' className = 'fa fa-search' />
+                <h3>We couldn’t find any repositories matching <p>{repoSearchValue}</p></h3>
+            </section>;
 
         return (
             <div>

@@ -6,6 +6,7 @@ import { TabsHeader } from '../../TabsHeader';
 import { CodeTab } from '../../CodeTab';
 import { EditForm } from './EditForm';
 import { RepoBtnGroup } from './RepoBtnGroup';
+import { DropdownBtn } from '../../common/DropdownBtn';
 import Loader from '../../common/Loader';
 import gh, { USER_CREDENTIALS } from '../../../helpers/githubApi';
 import { getRepo, getBranch, getBranches, getCommits, getTree } from '../../../actions';
@@ -76,22 +77,37 @@ export class Repo extends Component {
             }];
     }
 
-    codeNavigation = {
-        buttons: [
-            {
-                text:      'New pull request',
-                className: 'btn-default disabled'
-            },
-            {
-                text:      'Clone or download',
-                className: 'btn-success'
-            },
-            {
-                text:      'Delete this repository',
-                className: 'btn-danger',
-                onClick:   () => this.deleteRepo()
-            }
-        ]
+    codeNavigation () {
+        return {
+            buttons: [
+                {
+                    text:      'New pull request',
+                    className: 'btn-default disabled'
+                },
+                {
+                    component: (
+                        <DropdownBtn
+                            className = { 'btn-success' }
+                            key = 'clone-dropdown-btn'
+                            text = 'Clone or download'>
+                            <div className = { Styles.cloneRepoDDWrapper }>
+                                <h3 className = { Styles.cloneRepoDDTitle }>Clone with HTTPS</h3>
+                                <div className = { Styles.cloneRepoDDContent }>
+                                    <p>Use Git or checkout with SVN using the web URL.</p>
+                                    <input readOnly className = 'form-control' type = 'text' value = { this.state.repo.git_url } />
+                                </div>
+                                <a className = { Styles.cloneRepoDDLink } href = '#'>Download ZIP</a>
+                            </div>
+                        </DropdownBtn>
+                    )
+                },
+                {
+                    text:      'Delete this repository',
+                    className: 'btn-danger',
+                    onClick:   () => this.deleteRepo()
+                }
+            ]
+        };
     }
 
     onRepoChange = (repo) => this.setState({ repo });
@@ -113,7 +129,7 @@ export class Repo extends Component {
     deleteRepo = () => {
         const repoOwner = gh.getRepo(`${USER_CREDENTIALS.userName}/${this.state.repo.name}`);
 
-        repoOwner.deleteRepo().then(() => this.props.changePage('Profile'));
+        repoOwner.deleteRepo().then(() => this.props.changePage('Profile')); // ensure that browser cache is disabled
     }
 
     render () {
@@ -192,7 +208,7 @@ export class Repo extends Component {
                         onChange = { this.dropDownHandler }
                     />
                     <div className = { Styles.buttonGroup }>
-                        <RepoBtnGroup buttons = { this.codeNavigation.buttons } />
+                        <RepoBtnGroup buttons = { this.codeNavigation().buttons } />
                     </div>
                 </section>
                 <section className = { Styles.tree }>

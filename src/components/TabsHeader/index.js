@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import Styles from './styles.scss';
 
-const CreateButtonGrp = (props) => props.buttons.map((button, key) => <button className = { `${Styles.button} btn` } key = { key } type = 'button' onClick = { button.onClick }>{button.text}</button>);
+const CreateButtonGrp = (props) => props.buttons.map((button, key) => <button className = { `${button.className} btn` } key = { key } type = 'button' onClick = { button.onClick }>{button.text}</button>);
 
 export class TabsHeader extends Component {
 

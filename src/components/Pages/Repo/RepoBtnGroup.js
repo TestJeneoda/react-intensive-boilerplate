@@ -1,10 +1,10 @@
 import React from 'react';
 
-export const RepoBtnGroup = (props) => props.buttons.map((button, key) => (
-    //`${Styles.classname} btn`
+export const RepoBtnGroup = (props) => props.buttons.map((button, key) => !button.component ? (
     <button
-        className = { 'btn' }
+        className = { `${button.className} btn` }
         key = { key }
         type = 'button'
         onClick = { button.onClick }>{ button.text }
-    </button>));
+    </button>
+) : button.component);

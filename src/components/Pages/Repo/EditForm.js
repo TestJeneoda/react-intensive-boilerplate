@@ -36,7 +36,8 @@ export class EditForm extends Component {
     }
 
     render () {
-        const { homepage, description } = this.state;
+        const homepage = this.state.homepage !== null ? this.state.homepage : '';
+        const description = this.state.description !== null ? this.state.description : '';
 
         return (
             <section>
