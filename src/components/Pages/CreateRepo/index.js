@@ -7,7 +7,8 @@ import { newProjectDropDownValues } from '../../Dropdown/dropdownValues';
 import lock from '../../../theme/assets/lock.png';
 import book from '../../../theme/assets/repo.png';
 import { getGitignoreOptions, getLicenseOptions } from '../../../actions';
-const { gitIgnore, license } = newProjectDropDownValues;
+
+export const { gitIgnore, license } = newProjectDropDownValues;
 
 export class CreateRepo extends Component {
 
